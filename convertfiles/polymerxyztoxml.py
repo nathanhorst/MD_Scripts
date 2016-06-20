@@ -74,13 +74,15 @@ def polynp_conv(L,save,read,Lpoly):
         for line in data:
             i+=1
             s = line.split()
+	    if s[0]=='V':
+		vcoord=i
             if s[0]=='S':
                 for j in range(0,Lpoly-2):
                     if j==0:
-			fid.write(("Au-S-CH2 %d %d %d\n")%(int(i-1),int(i),int(i+1)))
+			fid.write(("Au-S-CH2 %d %d %d\n")%(int(vcoord),int(i),int(i+1)))
                         fid.write(("S-CH2-CH2 %d %d %d\n")%(int(i),int(i+1),int(i+2)))
-		    if j==Lpoly-2:
-			fid.write(("CH2-CH2-CH3 %d %d %d\n")%(int(i),int(i+1),int(i+2)))
+		    elif j==Lpoly-3:
+			fid.write(("CH2-CH2-CH3 %d %d %d\n")%(int(i+j),int(i+j+1),int(i+j+2)))
                     else:
                         fid.write(("CH2-CH2-CH2 %d %d %d\n")%(int(i+j),int(i+j+1),int(i+j+2)))
         fid.write('</angle>\n')
@@ -92,12 +94,12 @@ def polynp_conv(L,save,read,Lpoly):
             i+=1
             s = line.split()
             if s[0]=='S':
-                for j in range(0,Lpoly-2):
-                    fid.write(("phi1 %d %d %d %d\n")%(int(i+j-1),int(i+j),int(i+j+1),int(i+j+2)))
-                    fid.write(("phi2 %d %d %d %d\n")%(int(i+j-1),int(i+j),int(i+j+1),int(i+j+2)))
-                    fid.write(("phi3 %d %d %d %d\n")%(int(i+j-1),int(i+j),int(i+j+1),int(i+j+2)))
-                    fid.write(("phi4 %d %d %d %d\n")%(int(i+j-1),int(i+j),int(i+j+1),int(i+j+2)))
-                    fid.write(("phi5 %d %d %d %d\n")%(int(i+j-1),int(i+j),int(i+j+1),int(i+j+2)))
+                for j in range(0,Lpoly-3):
+                    fid.write(("phi1 %d %d %d %d\n")%(int(i+j),int(i+j+1),int(i+j+2),int(i+j+3)))
+                    fid.write(("phi2 %d %d %d %d\n")%(int(i+j),int(i+j+1),int(i+j+2),int(i+j+3)))
+                    fid.write(("phi3 %d %d %d %d\n")%(int(i+j),int(i+j+1),int(i+j+2),int(i+j+3)))
+                    fid.write(("phi4 %d %d %d %d\n")%(int(i+j),int(i+j+1),int(i+j+2),int(i+j+3)))
+                    fid.write(("phi5 %d %d %d %d\n")%(int(i+j),int(i+j+1),int(i+j+2),int(i+j+3)))
         fid.write('</dihedral>\n')
                     
                 
