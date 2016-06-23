@@ -71,7 +71,8 @@ def graft_HC_chain(save,readpoly,readnp,R1,R2):
             P=rp.align_vector(readpoly,v)
             for i in range(P.shape[0]):
                 P[i]=np.add(v,P[i])
-                if(i==P.shape[1]-1):
+                #if(i==P.shape[1]-1):
+                if(i==P.shape[0]-1):
                     fout.write(('CH3 %f %f %f\n')%(P[i][0],P[i][1],P[i][2]))
                 elif(i==0):
                     fout.write(('S %f %f %f\n')%(P[i][0],P[i][1],P[i][2]))
@@ -86,7 +87,8 @@ def graft_HC_chain(save,readpoly,readnp,R1,R2):
             P=rp.align_vector(readpoly,v)
             for i in range(P.shape[0]):
                 P[i]=np.add(v,P[i])
-                if(i==P.shape[1]-1):
+                #if(i==P.shape[1]-1):
+                if(i==P.shape[0]-1):
                     fout.write(('CH3 %f %f %f\n')%(P[i][0],P[i][1],P[i][2]))
                 elif(i==0):
                     fout.write(('S %f %f %f\n')%(P[i][0],P[i][1],P[i][2]))  

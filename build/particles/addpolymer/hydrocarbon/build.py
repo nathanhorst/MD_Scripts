@@ -17,7 +17,7 @@ import build_HC_chain as bhcc
 ## Number of repeating units in polymer graft
 #############################
 
-n=10
+n=11
 
 #################
 ## File to output grafted nanoparticle
@@ -29,7 +29,7 @@ outputfile='Au201_HCchains.xyz'
 ## xyz File with existing nanoparticle
 #################
 
-npfile='Au201.xyz'
+npfile='Au201_a3p96.xyz'
 
 #################
 ## File to store polymer before grafting
@@ -41,23 +41,23 @@ poly_file='HC_chain_n'+str(n)+'.xyz'
 ## build and save polymer
 #################
 
-bhcc.build_full_HC_chain(poly_file,n)
+bhcnp.build_HC_chain_noS(poly_file,n)
 
 #################
 ##set grafting vectors
 #################
 
-x1=1
-y1=1
-z1=1
+x1=-3.96
+y1=3.96
+z1=-3.96
 
 R1=np.sqrt(x1**2+y1**2+z1**2)
 
 ###########
 
-x2=1
-y2=1.5
-z2=0.5
+x2=-3.96
+y2=1.98
+z2=-5.94
 
 R2=np.sqrt(x2**2+y2**2+z2**2)
 
