@@ -33,12 +33,18 @@ def polynp_conv(L,save,read,Lpoly):
         
     def body(fid, data):
         fid.write('<body>\n')
+        count=0
+        canCount=False
         for line in data:
             s = line.split()
             if s[0] == 'Au' or s[0] == 'S' or s[0]=='V':
-                fid.write('0\n')
+	    	if(s[0]=='Au' and canCount):
+			count+=1
+		canCount=False
+		fid.write(str(count)+'\n')
             else:
                 fid.write('-1\n')
+		canCount=True
         fid.write('</body>\n')
         
     def mass(fid, data):
