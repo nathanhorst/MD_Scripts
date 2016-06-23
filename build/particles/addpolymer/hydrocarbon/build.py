@@ -65,5 +65,4 @@ R2=np.sqrt(x2**2+y2**2+z2**2)
 ## graft chain and save nanoparticle
 #################
 
-
 bhcnp.graft_HC_chain(outputfile,poly_file,npfile,R1,R2)
