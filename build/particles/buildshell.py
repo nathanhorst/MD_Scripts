@@ -12,14 +12,17 @@ import numpy as np
 import nanoparticle_core as npc
 
 
-uc_size=3
-uc_shellsize=uc_size-1
+uc_size=2.5
+uc_shellsize=uc_size-0.5
 uc_bcc=npc.NanoBcc(uc_size)
 uc_shell=npc.NanoBcc(uc_shellsize)
 #uc_fcc = npc.NanoFcc(uc_size)
 
 searchquery1='C'
 vec_all=[]
+TYPE='Au'
+
+fin= open("Au201shell.xyz",'w')
 
 with open('base.xyz') as f1:
     lines=f1.readlines()
@@ -27,12 +30,18 @@ with open('base.xyz') as f1:
         if line.startswith(searchquery1):
             split=str(line).split()
             vec_all.append(np.array([split[1],split[2],split[3]]).astype(np.float))
-num = 1
-with open("bccnpshell.xyz",'w') as f3:    
+    V=np.array([[0.0,0.0,0.0]])
+    count=1
     for ind, vec in enumerate(vec_all):
         if uc_bcc.check_point(np.array(vec)):
             if not uc_shell.check_point(np.array(vec)):
-                print(vec)
-                f3.write('%d %1.6f %1.6f %1.6f'% (num, vec[0], vec[1], vec[2])+'\n')
-f3.close()
-            
+                count+=1
+                V=np.append(V,[vec],axis=0)
+
+print count
+fin.write(('%s \n\n')%(count))
+for i in range(1,count):
+    fin.write(('%s %1.6f %1.6f %1.6f \n')%(TYPE, V[i][0], V[i][1], V[i][2]))
+fin.write(('V %1.6f %1.6f %1.6f \n')%(V[0][0], V[0][1], V[0][2]))
+           
+
