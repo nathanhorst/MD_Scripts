@@ -1,0 +1,11 @@
+These scripts add hydrocarbon chains to the Au201 particles.
+
+First, a hydrocarbon chain of repeating unit length n must be made using build_HC_chain.py
+
+Next, that chain may be grafted to the nanoparticle using build.py
+
+	this is done in a few steps:
+	add polymer chains to hexagonal faces from specific Au atoms
+	add polymer chains to square faces from geometric sites
+
+***Ensure that the particle and the chain have the same distance scale before grafting*** 

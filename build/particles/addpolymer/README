@@ -2,18 +2,13 @@ Take an existing particle and add polymers to it:
 
 	add.py will add polymers of a specified length to the NP
 	starting from atoms of the NP which are a specific distance
-	from the origin and moving radially outward
-
-	build.py will add polymers from specifed sites for the Au201 particle
-	that do not extend from atomic sites of the particle. This script is
-	highly unique to the Au201 case, and would need modification to use on
-	other particles
+	from the origin and moving radially outward in a straight line
 
 	add_poly.py is the script called upon the build the particles, and
 	would need to modified to build appropriate atom types if other 
 	polymers are desired
 
-After using build.py or add.py, the user must enter the xyz file and add the
+After add.py, the user must enter the xyz file and add the
 appropriate number of atoms to the first line, as the program does not do this
 automatically
 

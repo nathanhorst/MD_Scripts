@@ -4,14 +4,10 @@ Created on Thu Jun  9 14:43:52 2016
 
 @author: nathan
 """
-import os
-import sys
-
 import numpy as np
-from numpy import linalg as LA
 
 import build_HC_np as bhcnp
-import build_HC_chain as bhcc
+import add_trans_poly as atp
 
 #############################
 ## Number of repeating units in polymer graft
@@ -23,13 +19,13 @@ n=11
 ## File to output grafted nanoparticle
 #################
 
-outputfile='Au201_HCchains.xyz' 
+outputfile1='Au201_HChexchains.xyz' 
 
 #################
 ## xyz File with existing nanoparticle
 #################
 
-npfile='Au201_a3p96.xyz'
+npfile1='Au201_3p96.xyz'
 
 #################
 ## File to store polymer before grafting
@@ -65,4 +61,38 @@ R2=np.sqrt(x2**2+y2**2+z2**2)
 ## graft chain and save nanoparticle
 #################
 
-bhcnp.graft_HC_chain(outputfile,poly_file,npfile,R1,R2)
+bhcnp.graft_HC_chain(outputfile1,poly_file,npfile1,R1,R2)
+
+#################
+## File to output grafted nanoparticle
+#################
+
+outputfile2='Au201HC.xyz' 
+
+#################
+## xyz File with existing nanoparticle
+#################
+
+npfile2='Au201_HChexchains.xyz'
+
+#################
+##set grafting vectors
+#################
+
+x1=0
+y1=0
+z1=7.92
+
+R1=np.sqrt(x1**2+y1**2+z1**2)
+
+###########
+##s-s is the sulfur-sulfur distance on the square face in whatever units are being used
+#############
+s_s=4.1
+
+#################
+## graft chain and save nanoparticle
+#################
+
+
+atp.graft_square_faces(outputfile2,poly_file,npfile2,R1,s_s)
