@@ -102,10 +102,6 @@ def polynp_conv(L,save,read,Lpoly):
             if s[0]=='S':
                 for j in range(0,Lpoly-3):
                     fid.write(("phi1 %d %d %d %d\n")%(int(i+j),int(i+j+1),int(i+j+2),int(i+j+3)))
-                    fid.write(("phi2 %d %d %d %d\n")%(int(i+j),int(i+j+1),int(i+j+2),int(i+j+3)))
-                    fid.write(("phi3 %d %d %d %d\n")%(int(i+j),int(i+j+1),int(i+j+2),int(i+j+3)))
-                    fid.write(("phi4 %d %d %d %d\n")%(int(i+j),int(i+j+1),int(i+j+2),int(i+j+3)))
-                    fid.write(("phi5 %d %d %d %d\n")%(int(i+j),int(i+j+1),int(i+j+2),int(i+j+3)))
         fid.write('</dihedral>\n')
                     
                 
