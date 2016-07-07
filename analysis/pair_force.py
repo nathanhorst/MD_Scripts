@@ -4,7 +4,7 @@ Created on Mon Jun 27 16:37:49 2016
 
 @author: waltmann
 """
-
+import V_distance as vd
 import numpy as np
 
 def vector_length(x,y,z):
@@ -30,8 +30,8 @@ def mass_acc_list(inputfile):
    masscount=0
    accelcount=0
    mass_ar=np.array([0.0])
-   accel_ar=np.array([0.0])
-   ma= np.array([[0.0,0.0]])
+   accel_ar=np.array([[0.0,0.0,0.0]])
+   ma= np.array([[0.0,0.0,0.0,0.0]])
    for line in data1:
        if(mass):
            masscount+=1
@@ -50,28 +50,55 @@ def mass_acc_list(inputfile):
             acceldone=True
        elif(accel):
             vec=[float(s[0]),float(s[1]),float(s[2])]
-            accel_ar=np.append(accel_ar,[length(vec)], axis=0)
+            accel_ar=np.append(accel_ar,[[vec[0],vec[1],vec[2]]], axis=0)
        elif(s[0][:13]=='<acceleration'):
             accel=True
        elif(massdone and acceldone):
             for x in range(1,masscount):
-                ma=np.append(ma,[[mass_ar[x],accel_ar[x]]], axis=0)
+                ma=np.append(ma,[[mass_ar[x],accel_ar[x][0],accel_ar[x][1],accel_ar[x][2]]], axis=0)
             return ma
-#print(np_seperate(2,mass_acc_list('atoms.dump.0002000000.xml')))
+
      
 #uses a mass acceleration list to calculate the F1 vector for each np
          
 def np_seperate(numbnp,arr):
-    forces= np.array([[0,0.0]])
+    forces= np.array([[0,0.0,0.0,0.0]])
     t=((len(arr)-1)/numbnp)+1
     s=1
     for i in range(1,numbnp+1):
-        fn=0
+        fn1=0
+	fn2=0
+	fn3=0
         for x in range(s,t):
-            fn+=arr[x][0]*arr[x][1]
-        forces=np.append(forces,[[i,fn]],axis=0)
+            fn1+=arr[x][0]*arr[x][1]
+	    fn2+=arr[x][0]*arr[x][2]
+            fn3+=arr[x][0]*arr[x][3]
+        forces=np.append(forces,[[i,fn1,fn2,fn3]],axis=0)
         x=(len(arr)-1)/numbnp  
         s+=x
         t+=x
     return forces
-    
+
+def force_average_of_files(nfiles,file1,file2):
+    total=0.0
+    avefile=0.0
+    file1=file1[11:-4]
+    file2=file2[11:-4]
+    for c in range(0,nfiles):
+        file0=(int(file1)+(int(file2)-int(file1))*c)
+        toopen='atoms.dump.'
+        for v in range(0,10-len(str(file0))):
+            toopen=toopen + '0'
+        toopen=toopen + str(file0) + '.xml'
+        #print(toopen)
+        x=np_seperate(2,mass_acc_list(toopen))
+        y=np.subtract(x[2],x[1])
+        z=vd.v_pos_matrix(toopen)
+        w=np.subtract(z[2],z[1])
+        ru=w/vd.length(w)
+        f=np.array([y[1]*y[0],y[2]*y[0],y[3]*y[0]])
+        total+=np.dot(f,ru)
+    avefile=float(total)/float(nfiles)
+    return avefile
+#print(mass_acc_list('atoms.dump.0007000000.xml'))
+print(force_average_of_files(21,'atoms.dump.0005000000.xml','atoms.dump.0005100000.xml'))    
