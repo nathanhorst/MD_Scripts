@@ -211,5 +211,5 @@ def nth_carbon_pos_matrix(inputfile,n,typs):
     #print len(n_mat)
     return n_mat
 x=np.array(['S','CH2','CH3'])
-#for c in range(0,13):
-#    print(new_distance_to_nth_carbon('2np.xml',c))
+#for c in range(0,3):
+#    print(new_distance_to_nth_carbon('atoms.dump.0005000000.xml',c))

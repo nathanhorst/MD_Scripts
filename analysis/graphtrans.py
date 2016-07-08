@@ -7,7 +7,7 @@ Created on Thu Mar 31 11:32:15 2016
 import numpy as np
 import matplotlib.pyplot as plt
 
-with open("trans_Tvar.txt") as f:
+with open("trans_Tvar0.txt") as f:
     data = f.readlines()
 
 with open("trans_Tvar1.txt") as f1:
