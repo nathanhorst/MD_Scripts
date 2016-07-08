@@ -113,6 +113,8 @@ def part_distance(part1,part2,inputfile):
     #print lx
     #print ly
     #print lz
+    #print part1
+    #print part2[0]
     x=abs(float(part1[0])-float(part2[0]))
     if(x>(lx/2)-1):
         x=lx-x
