@@ -124,8 +124,8 @@ def new_distance_to_nth_carbon_list(inputfile,nth):
         list.append(u.part_distance(xn,yn,inputfile))
     return list
     
-u.write_array(u.histogram(new_distance_to_nth_carbon_list('2np.xml',12),10),'dist.txt')
-print new_distance_to_nth_carbon_list('2np.xml',12)
+#u.write_array(u.histogram(new_distance_to_nth_carbon_list('2np.xml',12),10),'dist.txt')
+#print new_distance_to_nth_carbon_list('2np.xml',12)
     
 def dist_average_of_files(nfiles,file1,file2, nth):
     avefile=0.0
