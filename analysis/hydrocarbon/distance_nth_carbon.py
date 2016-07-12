@@ -44,11 +44,7 @@ def distance_to_nth_carbon(inputfile,nth):
         elif(s[0][:4]=='<box'):
             box_size=float(s[2][4:-1])
     count=0
-    #print numAu
-    #print cnum
-    #print chnum
     pos=0
-    #n=np.array([[0.0,0.0]])
     carnum=[]
     distance=[]
     spos=[0,0,0]   
@@ -82,26 +78,10 @@ def distance_to_nth_carbon(inputfile,nth):
     for u in range(0,len(carnum)):
         if(carnum[u]==nth):
             distr.append(distance[u])
-            #print(str(distance[u]))
             lc+=1
-            #print('entry')
-        
-    #print(carnum)
-    #print(distance)
-  #  n=np.array([[carnum[0]],distance[0]])
-   # for i in range(1,len(carnum)):
-    #    n=np.append(n,[carnum[i],distance[i]], axis=0)
-    #print(distance[34])
-    #return carnum,distance
-    #print carnum
-    #print distance
-    distr.sort()
-    #print distr
-    #print len(carnum)    
-    return distr        
-#print(distance_to_nth_carbon('atoms.dump.0006475000.xml',12))    
+    distr.sort()  
+    return distr          
 
- #n=np.append(n,[(count-numAu)%(cnum+1),vector_length(float(s[0])-spos[0],float(s[1])-spos[1], float(s[2])-spos[2])],axis=0)
 def new_distance_to_nth_carbon(inputfile,nth):
     typs=['S','CH2','CH3']
     x=nth_carbon_pos_matrix(inputfile,nth,typs)
@@ -124,9 +104,6 @@ def new_distance_to_nth_carbon_list(inputfile,nth):
         list.append(u.part_distance(xn,yn,inputfile))
     return list
     
-#u.write_array(u.histogram(new_distance_to_nth_carbon_list('2np.xml',12),10),'dist.txt')
-#print new_distance_to_nth_carbon_list('2np.xml',12)
-    
 def dist_average_of_files(nfiles,file1,file2, nth):
     avefile=0.0
     total=0.0
@@ -145,7 +122,6 @@ def dist_average_of_files(nfiles,file1,file2, nth):
         total=0.0
     avefile=avefile/nfiles
     return avefile
-#print(dist_average_of_files(16,'atoms.dump.0004600000.xml','atoms.dump.0004725000.xml', 12))
     
 def dist_v_timestep(nfiles,file1,file2, nth):
     file1=file1[11:-4]
@@ -157,41 +133,31 @@ def dist_v_timestep(nfiles,file1,file2, nth):
         for v in range(0,10-len(str(file0))):
             toopen=toopen + '0'
         toopen=toopen + str(file0) + '.xml'
-        #print(toopen)
         x=new_distance_to_nth_carbon(toopen,nth)
         out=np.append(out,[[file0,x]],axis=0)
-        #out=np.delete(out,0,0)
     return out
 
 ######typs is the types that constitute the chain s,ch2,ch3 head,repeat, end
 def chain_pos_matrix(inputfile,typs):
     chain_pos=np.array([['type',0.0,0.0,0.0]])
-    for i in range(len(typs)):
-        f=v.type_pos_matrix(inputfile,typs[i])
-        for x in range(1,len(f)):
-            chain_pos=np.append(chain_pos,[[typs[i],f[x][0],f[x][1],f[x][2]]],axis=0)
-    chain=np.array([chain_pos[0]])
-    snum=0
-    #print chain_pos
-    #print typs[0]
-    while(chain_pos[snum+1][0]==typs[0]):
-        snum+=1
-    repnum=0
-    while(chain_pos[snum+1+repnum][0]==typs[1]):
-        repnum+=1
-    n=repnum/snum
-    #print n
-    for i in range(1,snum):
-        chain=np.append(chain,[chain_pos[i]],axis=0)
-        #print i
-        for x in range(0,n):
-            chain=np.append(chain,[chain_pos[i+snum+x+(i-1)*(n-1)]],axis=0)
-            #print i+snum+x+(i-1)*(n-1)
-        chain=np.append(chain,[chain_pos[i+repnum+snum]],axis=0)
-        #print i+repnum+snum
-    return chain
-
-
+    s=v.type_pos_matrix(inputfile,typs[0])
+    print s
+    c2=v.type_pos_matrix(inputfile,typs[1])
+    c3=v.type_pos_matrix(inputfile,typs[2])
+    scount=0
+    c2count=0
+    c3count=0
+    for n in range(1,len(s)):
+        chain_pos=np.append(chain_pos,[[typs[0],s[n][0],s[n][1],s[n][2]]],axis=0)
+        scount+=1
+        l=(len(c2)-1)/(len(s)-1)
+        for i in range(0,l):
+            chain_pos=np.append(chain_pos,[[typs[1],c2[i+(n-1)*l][0],c2[i+(n-1)*l][1],c2[i+(n-1)*l][2]]],axis=0)
+            c2count+=1
+        chain_pos=np.append(chain_pos,[[typs[2],c3[n][0],c3[n][1],c3[n][2]]],axis=0)
+        c3count+=1
+    return chain_pos
+    
 
 def nth_carbon_pos_matrix(inputfile,n,typs):
     chain=chain_pos_matrix(inputfile,typs)
@@ -200,13 +166,9 @@ def nth_carbon_pos_matrix(inputfile,n,typs):
     while(chain[d][0]!=typs[0]):
         d+=1
     length=d-1
-    #print length
     d=n+1
     while(d<len(chain)):
         n_mat=np.append(n_mat,[[chain[d][1],chain[d][2],chain[d][3]]],axis=0)
-        #print chain[d][0]
         d+=length
-    #print len(n_mat)
     return n_mat
-#for c in range(1,13):
-#    print(new_distance_to_nth_carbon('2np.xml',c))
+
