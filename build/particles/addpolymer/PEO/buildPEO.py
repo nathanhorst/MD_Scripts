@@ -12,7 +12,7 @@ import build_PEO_np as bpnp
 ## Number of repeating units in polymer graft
 #############################
 
-n=12
+n=20
 
 #################
 ## File to output grafted nanoparticle

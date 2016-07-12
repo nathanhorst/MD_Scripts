@@ -14,19 +14,23 @@ def build_PEO_chain_noS(save,n):
     
     fid = open(save,'w')
     
-    O=[0.0,0.0,0.0]
-    S=[-1.5,0.0,0.0]
+    O=[1.0,0.0,0.0]
+    S=[-1.0,0.0,0.0]
     Spos=np.add(O,S)
-    Ovec1=[1.5,0.0,0.0]
+    Ovec1=[1.0,0.0,0.0]
     
-    fid.write(str(1+n)+'\n\n')
+    fid.write(str(n)+'\n\n')
     current= Spos
     for x in range(0,n):
         if(x==0):
             current=O
+	    fid.write(('O %s %s %s\n')%(current[0],current[1],current[2]))
+	if(x==n-1):
+	    current=np.add(current,Ovec1)
+	    fid.write(('OH %s %s %s\n')%(current[0],current[1],current[2]))
         else:
             current=np.add(current,Ovec1)
-        fid.write(('O %s %s %s\n')%(current[0],current[1],current[2]))    
+            fid.write(('O %s %s %s\n')%(current[0],current[1],current[2]))    
 
 def graft_PEO_hex(save,readpoly,readnp,R1,R2):
     
@@ -38,7 +42,7 @@ def graft_PEO_hex(save,readpoly,readnp,R1,R2):
     f1data=fin1.read()
     data1=f1data.splitlines()
     data1=data1[2:]
-    print('length of poly is '+str(len(data1)+1))
+    print('length of poly is '+str(len(data1)))
     
     f2data=fin2.read()
     data2=f2data.splitlines()
@@ -78,7 +82,7 @@ def graft_PEO_hex(save,readpoly,readnp,R1,R2):
         for i in range(P.shape[0]):
             P[i]=np.add(centers[v],P[i])
             if(i==P.shape[0]-1):
-                fout.write(('O %f %f %f\n')%(P[i][0],P[i][1],P[i][2]))
+                fout.write(('OH %f %f %f\n')%(P[i][0],P[i][1],P[i][2]))
             elif(i==0):
                 fout.write(('S %f %f %f\n')%(P[i][0],P[i][1],P[i][2]))
             else:
@@ -89,8 +93,8 @@ def graft_PEO_hex(save,readpoly,readnp,R1,R2):
         for i in range(1,centers.shape[0]):
             findhexes=np.subtract(centers[i],hexes[v])
             norm=np.sqrt(findhexes[0]**2+findhexes[1]**2+findhexes[2]**2)
-            if norm <= 3.18/2:
-                newhexes=np.append(newhexes,[np.add(centers[i],np.multiply(1.352/2,findhexes))],axis=0)
+            if norm <= 3.18/(3.96/np.sqrt(2)):
+                newhexes=np.append(newhexes,[np.add(centers[i],np.multiply(1.28931,findhexes))],axis=0)
        
     for v in range(1,newhexes.shape[0]):
         P=rp.align_vector(readpoly,newhexes[v])
@@ -98,7 +102,7 @@ def graft_PEO_hex(save,readpoly,readnp,R1,R2):
             P[i]=np.add(newhexes[v],P[i])
             #if(i==P.shape[1]-1):
             if(i==P.shape[0]-1):
-                fout.write(('O %f %f %f\n')%(P[i][0],P[i][1],P[i][2]))
+                fout.write(('OH %f %f %f\n')%(P[i][0],P[i][1],P[i][2]))
             elif(i==0):
                 fout.write(('S %f %f %f\n')%(P[i][0],P[i][1],P[i][2]))
             else:
@@ -163,7 +167,7 @@ def graft_square_faces(save,readpoly,readnp,R,sulfur_distance):
         for x in range(P.shape[0]):
             P[x]=np.add(vecs[v],P[x])
             if(x==P.shape[0]-1):
-                fout.write(('O %f %f %f\n')%(P[x][0],P[x][1],P[x][2]))
+                fout.write(('OH %f %f %f\n')%(P[x][0],P[x][1],P[x][2]))
             elif(x==0):
                 fout.write(('S %f %f %f\n')%(P[x][0],P[x][1],P[x][2]))
             else:
