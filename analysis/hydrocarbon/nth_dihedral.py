@@ -131,7 +131,7 @@ def trans_v_timestep(nfiles,file1,file2, nth, l):
         if(nth==0):
             out=np.append(out,[[file0,average_trans(toopen)]],axis=0)
         else:
-            out=np.append(out,trans_nth_dihedral(toopen,nth,l),axis=0)
+            out=np.append(out,[[file0,trans_nth_dihedral(toopen,nth,l)]],axis=0)
         #out=np.delete(out,0,0)
     return out
 """   
