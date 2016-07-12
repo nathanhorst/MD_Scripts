@@ -72,6 +72,7 @@ def average_trans(inputfile):
         else:
             numgplus+=1
         #print(float(len(d)-1))   
+        
     return numtrans/float(len(d)-1)
 
 #print('   '+str(average_trans('11chain.xml')))
@@ -130,8 +131,8 @@ def trans_v_timestep(nfiles,file1,file2, nth, l):
         if(nth==0):
             out=np.append(out,[[file0,average_trans(toopen)]],axis=0)
         else:
-            out=np.append(out,[[file0,trans_nth_dihedral(toopen,nth,l)]],axis=0)
-	#out=np.delete(out,0,0)
+            out=np.append(out,trans_nth_dihedral(toopen,nth,l),axis=0)
+        #out=np.delete(out,0,0)
     return out
 """   
 x=trans_v_timestep(97,'atoms.dump.0000500000.xml','atoms.dump.0000552083.xml',0, 13)
@@ -168,15 +169,7 @@ for i in range(1,len(x)):
 print(numtrans/float(len(x)-1))
 """
 
-def write_array(arr, outputfile):
-    fid=open(outputfile,'w')
-    for i in range(1,arr.shape[0]):
-        for x in range(0,arr.shape[1]):
-            fid.write(str(arr[i][x]))
-            if(x!=arr.shape[1]-1):
-                fid.write(" ")
-            else:
-                fid.write('\n')
+
 
  
     
