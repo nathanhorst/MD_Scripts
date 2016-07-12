@@ -8,8 +8,8 @@ import os
 import sys
 
 import numpy as np
-from numpy import linalg as LA
 import V_distance as v
+import util as u
 ##inputfile is xml
 
 
@@ -110,24 +110,22 @@ def new_distance_to_nth_carbon(inputfile,nth):
     for i in range(1,len(y)):
         xn=np.array([float(x[i][0]),float(x[i][1]),float(x[i][2])])
         yn=np.array([float(y[i][0]),float(y[i][1]),float(y[i][2])])
-        total+=v.part_distance(xn,yn,inputfile)
+        total+=u.part_distance(xn,yn,inputfile)
     return float(total)/float(len(y)-1)
     
-    
-def new_distance_to_nth_carbon(inputfile,nth):
+def new_distance_to_nth_carbon_list(inputfile,nth):
     typs=['S','CH2','CH3']
+    list=[]
     x=nth_carbon_pos_matrix(inputfile,nth,typs)
     y=nth_carbon_pos_matrix(inputfile,0,typs)
-    total=0
     for i in range(1,len(y)):
         xn=np.array([float(x[i][0]),float(x[i][1]),float(x[i][2])])
         yn=np.array([float(y[i][0]),float(y[i][1]),float(y[i][2])])
-        #print xn
-        #print yn 
-        #print v.part_distance(xn,yn,inputfile)
-        #print '\n'
-        total+=v.part_distance(xn,yn,inputfile)
-    return float(total)/float(len(y)-1)
+        list.append(u.part_distance(xn,yn,inputfile))
+    return list
+    
+u.write_array(u.histogram(new_distance_to_nth_carbon_list('2np.xml',12),10),'dist.txt')
+print new_distance_to_nth_carbon_list('2np.xml',12)
     
 def dist_average_of_files(nfiles,file1,file2, nth):
     avefile=0.0
@@ -210,6 +208,5 @@ def nth_carbon_pos_matrix(inputfile,n,typs):
         d+=length
     #print len(n_mat)
     return n_mat
-x=np.array(['S','CH2','CH3'])
-#for c in range(0,3):
-#    print(new_distance_to_nth_carbon('atoms.dump.0005000000.xml',c))
+#for c in range(1,13):
+#    print(new_distance_to_nth_carbon('2np.xml',c))

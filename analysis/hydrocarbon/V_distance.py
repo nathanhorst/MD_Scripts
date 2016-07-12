@@ -8,7 +8,7 @@ import sys
 
 from numpy import linalg as LA
 import numpy as np
-import nth_dihedral as nth
+import util as u
 
 def v_pos_matrix(inputfile):
     fin1= open(inputfile,'r')
@@ -54,81 +54,6 @@ def v_pos_matrix(inputfile):
 
 
 
-def vector_length(x,y,z):
-    c=np.sqrt(x**2+y**2+z**2)
-    return c
-    
-def length(vector):
-    return vector_length(vector[0],vector[1],vector[2])    
-
-def part_distance(part1,part2,lx,ly,lz):
-    
-    x=abs(float(part1[0])-float(part2[0]))
-    if(x>(lx/2)-1):
-        x=lx-x
-    y=abs(float(part1[1])-float(part2[1]))
-    if(y>(ly/2)-1):
-        y=ly-y
-    z=abs(float(part1[2])-float(part2[2]))
-    if(z>(lz/2)-1):
-        z=lz-z
-    return vector_length(x,y,z)
-
-
-def part_distance(part1,part2,inputfile):
-    fin1= open(inputfile,'r')
-    f1data=fin1.read()
-    data1=f1data.splitlines()
-    #print data1[3]
-    s=data1[3].split()
-    #print s
-    lx=0
-    ly=0
-    lz=0
-    for i in range(len(s)):
-        if s[i][:2]=='lx':
-            count=0
-            while(s[i][count]!='"'):
-                count+=1
-            b=1
-            while(s[i][count+b]!='"'):
-                b+=1
-            lx=float(s[i][count+1:b+count-len(s[i])])
-        elif s[i][:2]=='ly':
-            count=0
-            while(s[i][count]!='"'):
-                count+=1
-            b=1
-            while(s[i][count+b]!='"'):
-                b+=1
-            ly=float(s[i][count+1:b+count-len(s[i])])
-        elif s[i][:2]=='lz':
-            count=0
-            while(s[i][count]!='"'):
-                count+=1
-            b=1
-            while(s[i][count+b]!='"'):
-                b+=1
-            lz=float(s[i][count+1:b+count-len(s[i])])
-    #print lx
-    #print ly
-    #print lz
-    #print part1
-    #print part2[0]
-    x=abs(float(part1[0])-float(part2[0]))
-    if(x>(lx/2)-1):
-        x=lx-x
-    y=abs(float(part1[1])-float(part2[1]))
-    #print y
-    if(y>(ly/2)-1):
-        y=ly-y
-    z=abs(float(part1[2])-float(part2[2]))
-    if(z>(lz/2)-1):
-        z=lz-z
-    #print x
-    #print y 
-    #print z
-    return vector_length(x,y,z)
 
 ###this function should return an array of nearest neighbor distances for 
 ## each particle with the position of the distnace corresponding to the
@@ -140,7 +65,7 @@ def n_neighbor_vector_list(v_pos_mat):
         min=10000
         minvec=[0.0,0.0,0.0]
         for x in range(1,len(v_pos_mat)):
-            if part_distance(v_pos_mat[i],v_pos_mat[x],50,50,50)<min and i!=x:
+            if u.part_distance(v_pos_mat[i],v_pos_mat[x],50,50,50)<min and i!=x:
                 minvec=v_pos_mat[x]
         distance=np.append(distance,[minvec],axis=0)
     return distance
@@ -156,7 +81,7 @@ def dist_v_timestep(nfiles,file1,file2):
             toopen=toopen + '0'
         toopen=toopen + str(file0) + '.xml'
         x=v_pos_matrix(toopen)
-        out=np.append(out,[[file0,part_distance(x[1],x[2],55,55,55)]],axis=0)
+        out=np.append(out,[[file0,u.part_distance(x[1],x[2],55,55,55)]],axis=0)
     return out
     
 #nth.write_array(dist_v_timestep#(100,'atoms.dump.0000000000.xml','atoms.dump.0000100000.xml'),'distance.txt')
