@@ -11,6 +11,8 @@ last='atoms.dump.0010499936.xml'
 rstep=0.8
 rmax=20.0
 
+### dist_v_timestep(#dumpfiles,firstfile,secondfile,Lpoly-1) ###
+
 y=dnc.dist_v_timestep(100,str(first),str(second),22)
 u.write_array(y,'dist_12thC.txt')
 

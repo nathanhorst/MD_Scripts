@@ -15,6 +15,8 @@ for i in range(11):
     x=nd.trans_v_timestep(100,str(first),str(second),i,13)
     u.write_array(x,'trans_Tvar'+str(i)+'.txt')
 
+### dist_v_timestep(#dumpfiles,firstfile,secondfile,Lpoly-1) ###
+
 y=dnc.dist_v_timestep(100,str(first),str(second),12)
 u.write_array(y,'dist_12thC.txt')
 

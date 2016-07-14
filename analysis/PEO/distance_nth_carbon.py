@@ -83,7 +83,7 @@ def distance_to_nth_carbon(inputfile,nth):
     return distr          
 
 def new_distance_to_nth_carbon(inputfile,nth):
-    typs=['S','CH2','CH3']
+    typs=['S','O','OH']
     x=nth_carbon_pos_matrix(inputfile,nth,typs)
     y=nth_carbon_pos_matrix(inputfile,0,typs)
     total=0
@@ -94,7 +94,7 @@ def new_distance_to_nth_carbon(inputfile,nth):
     return float(total)/float(len(y)-1)
     
 def new_distance_to_nth_carbon_list(inputfile,nth):
-    typs=['S','CH2','CH3']
+    typs=['S','O','OH']
     list=[]
     x=nth_carbon_pos_matrix(inputfile,nth,typs)
     y=nth_carbon_pos_matrix(inputfile,0,typs)
@@ -141,7 +141,7 @@ def dist_v_timestep(nfiles,file1,file2, nth):
 def chain_pos_matrix(inputfile,typs):
     chain_pos=np.array([['type',0.0,0.0,0.0]])
     s=v.type_pos_matrix(inputfile,typs[0])
-    print s
+    #print s
     c2=v.type_pos_matrix(inputfile,typs[1])
     c3=v.type_pos_matrix(inputfile,typs[2])
     scount=0
