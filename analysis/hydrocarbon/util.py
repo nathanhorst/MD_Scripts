@@ -42,7 +42,7 @@ def vector_length(x,y,z):
     
 def length(vector):
     return vector_length(vector[0],vector[1],vector[2])    
-
+"""
 def part_distance(part1,part2,lx,ly,lz):
     
     x=abs(float(part1[0])-float(part2[0]))
@@ -56,7 +56,7 @@ def part_distance(part1,part2,lx,ly,lz):
         z=lz-z
     return vector_length(x,y,z)
 
-
+"""
 def part_distance(part1,part2,inputfile):
     fin1= open(inputfile,'r')
     f1data=fin1.read()
@@ -120,3 +120,53 @@ def write_array(arr, outputfile):
                 fid.write(" ")
             else:
                 fid.write('\n')
+
+def dirac_delta(r,lower_limit,upper_limit,step):
+    a=.5
+    b=(upper_limit-lower_limit)/float(step)
+    result=np.array([[0.0,0.0]])
+    for i in range(0,step):
+        n=lower_limit+b*i
+        #print n
+        y=(1/a*np.sqrt(np.pi))*np.exp(-1*((n-r)**2/a**2))
+        result=np.append(result,[[n,y]],axis=0)
+    #print result
+    return result
+#write_array(dirac_delta(1.9343,0,2.4234234,200),'dd.txt')     
+def read_box_dimensions(inputfile):
+    fin1= open(inputfile,'r')
+    f1data=fin1.read()
+    data1=f1data.splitlines()
+    #print data1[3]
+    s=data1[3].split()
+    #print s
+    lx=0
+    ly=0
+    lz=0
+    for i in range(len(s)):
+        if s[i][:2]=='lx':
+            count=0
+            while(s[i][count]!='"'):
+                count+=1
+            b=1
+            while(s[i][count+b]!='"'):
+                b+=1
+            lx=float(s[i][count+1:b+count-len(s[i])])
+        elif s[i][:2]=='ly':
+            count=0
+            while(s[i][count]!='"'):
+                count+=1
+            b=1
+            while(s[i][count+b]!='"'):
+                b+=1
+            ly=float(s[i][count+1:b+count-len(s[i])])
+        elif s[i][:2]=='lz':
+            count=0
+            while(s[i][count]!='"'):
+                count+=1
+            b=1
+            while(s[i][count+b]!='"'):
+                b+=1
+            lz=float(s[i][count+1:b+count-len(s[i])])
+    return np.array([lx,ly,lz])
+    
