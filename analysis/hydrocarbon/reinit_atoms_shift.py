@@ -91,7 +91,7 @@ def status_matrix(inputfile):
 #going to return the modified status matrix     
 #assumes two particles for now      
 def particle_shift(status_matrix,shiftx,shifty,shiftz):
-    numbnp=2    
+    numbnp=2
     n=len(status_matrix)/numbnp
     which =1
     if status_matrix[0][2]>status_matrix[n][2]:
@@ -100,8 +100,18 @@ def particle_shift(status_matrix,shiftx,shifty,shiftz):
         status_matrix[i+which*n][1]=float(status_matrix[i+which*n][1])+shiftx
         status_matrix[i+which*n][2]=float(status_matrix[i+which*n][2])+shifty
         status_matrix[i+which*n][3]=float(status_matrix[i+which*n][3])+shiftz
-    return status_matrix
+        v=status_matrix
+    return v
 
+def status_matrix_shifted(s,shiftx,shifty,shiftz):
+    ##[[type,posx,posy,posz,mass,body]]    
+    v=np.array([['type',0.0,0.0,0.0,0.0,0.0]])    
+    for i in range(len(s)):
+        x=float(s[i][1])+shiftx
+        y=float(s[i][2])+shifty
+        z=float(s[i][3])+shiftz
+        v=np.append(v,[[s[i][0],x,y,z,s[i][4],s[i][5]]],axis=0)
+    return v[1:]
 ###############
 #this program should take an atoms file and reinitialize it as a motionless xml 
 #with the particles closer together

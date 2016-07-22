@@ -50,6 +50,7 @@ def v_pos_matrix(inputfile):
         elif(posdone and tipdone):
             for x in range(1,len(vnums)):
                 v_position=np.append(v_position,[position[vnums[x]]], axis=0)
+            #print v_position    
             return v_position
 
 
@@ -59,17 +60,30 @@ def v_pos_matrix(inputfile):
 ## each particle with the position of the distnace corresponding to the
 ### original position of the particle in the input array
 
-def n_neighbor_vector_list(v_pos_mat):
+def n_neighbor_vector_list(v_pos_mat,inputfile):
     distance=[[0.0,0.0,0.0]]
     for i in range(1,len(v_pos_mat)):
         min=10000
         minvec=[0.0,0.0,0.0]
         for x in range(1,len(v_pos_mat)):
-            if u.part_distance(v_pos_mat[i],v_pos_mat[x],50,50,50)<min and i!=x:
-                minvec=v_pos_mat[x]
+            if u.part_distance(v_pos_mat[i],v_pos_mat[x],inputfile)<min and i!=x:
+                minvec=np.subtract(v_pos_mat[x],v_pos_mat[i])
+                min=u.part_distance(v_pos_mat[i],v_pos_mat[x],inputfile)
         distance=np.append(distance,[minvec],axis=0)
     return distance
+ 
+
+def n_neighbor_distance_list(v_pos_mat,inputfile):
+     distance=[]
+     for i in range(1,len(v_pos_mat)):
+        min=10000
+        for x in range(1,len(v_pos_mat)):
+            if u.part_distance(v_pos_mat[i],v_pos_mat[x],inputfile)<min and i!=x:
+                min=u.part_distance(v_pos_mat[i],v_pos_mat[x],inputfile)
+        distance.append(min)
+     return distance
     
+#print(n_neighbor_distance_list(v_pos_matrix('Lat108_25_Fcc.xml'),'Lat108_25_Fcc.xml'))   
 def dist_v_timestep(nfiles,file1,file2):
     file1=file1[11:-4]
     file2=file2[11:-4]
@@ -81,7 +95,7 @@ def dist_v_timestep(nfiles,file1,file2):
             toopen=toopen + '0'
         toopen=toopen + str(file0) + '.xml'
         x=v_pos_matrix(toopen)
-        out=np.append(out,[[file0,u.part_distance(x[1],x[2],55,55,55)]],axis=0)
+        out=np.append(out,[[file0,u.part_distance(x[1],x[2],inputfile)]],axis=0)
     return out
     
 #nth.write_array(dist_v_timestep#(100,'atoms.dump.0000000000.xml','atoms.dump.0000100000.xml'),'distance.txt')

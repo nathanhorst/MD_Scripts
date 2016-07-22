@@ -92,18 +92,20 @@ def new_distance_to_nth_carbon(inputfile,nth):
         yn=np.array([float(y[i][0]),float(y[i][1]),float(y[i][2])])
         total+=u.part_distance(xn,yn,inputfile)
     return float(total)/float(len(y)-1)
+
+
     
 def new_distance_to_nth_carbon_list(inputfile,nth):
     typs=['S','CH2','CH3']
     list=[]
     x=nth_carbon_pos_matrix(inputfile,nth,typs)
     y=nth_carbon_pos_matrix(inputfile,0,typs)
-    for i in range(1,len(y)):
+    for i in range(1,len(x)):
         xn=np.array([float(x[i][0]),float(x[i][1]),float(x[i][2])])
         yn=np.array([float(y[i][0]),float(y[i][1]),float(y[i][2])])
         list.append(u.part_distance(xn,yn,inputfile))
     return list
-    
+   
 def dist_average_of_files(nfiles,file1,file2, nth):
     avefile=0.0
     total=0.0
@@ -141,7 +143,6 @@ def dist_v_timestep(nfiles,file1,file2, nth):
 def chain_pos_matrix(inputfile,typs):
     chain_pos=np.array([['type',0.0,0.0,0.0]])
     s=v.type_pos_matrix(inputfile,typs[0])
-    print s
     c2=v.type_pos_matrix(inputfile,typs[1])
     c3=v.type_pos_matrix(inputfile,typs[2])
     scount=0
@@ -172,3 +173,4 @@ def nth_carbon_pos_matrix(inputfile,n,typs):
         d+=length
     return n_mat
 
+#print new_distance_to_nth_carbon_list('scaled_np.xml',12) 
