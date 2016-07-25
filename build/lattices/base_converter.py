@@ -133,18 +133,39 @@ def type_pos_matrix(inputfile,typ):
             for x in range(1,len(vnums)):
                 v_position=np.append(v_position,[position[vnums[x]]], axis=0)
             return v_position
+
+
+####[['type,posx,posy,posz']]
+def all_pos_matrix_xyz(inputfile):
+    fin1= open(inputfile,'r')
+    f1data=fin1.read()
+    data1=f1data.splitlines()
+    data1=data1[2:]
+    b=np.array([['type',0.0,0.0,0.0]])
+    for line in data1:
+        s=line.split()
+        s[1]=float(s[1])
+        s[2]=float(s[2])
+        s[3]=float(s[3])
+        b=np.append(b,[[s[0],s[1],s[2],s[3]]],axis=0)
+    return b
+    
             
 def get_points(base_file):
     points=type_pos_matrix(base_file,'C')
     points=points[1:]
     return points
-    
+
+def get_points_xyz(base_file):
+    points=all_pos_matrix_xyz(base_file)
+    points=points[1:]
+    return points    
 
 def make_lattice(points,particle_file,newfile):
     a=np.array([['type',0.0,0.0,0.0]])
     x=status_matrix(particle_file)
     for p in points:
-        v=status_matrix_shifted(x,p[0],p[1],p[2])
+        v=status_matrix_shifted(x,float(p[1]),float(p[2]),float(p[3]))
         #print v
         #print 'fdd'
         for i in range(0,len(x)):
@@ -158,11 +179,41 @@ def make_lattice(points,particle_file,newfile):
         y=float(a[b][2])
         z=float(a[b][3])
         fout.write(("%s %f %f %f\n")%(a[b][0],x,y,z))
+
+###particle1 is the bigger 'A' particle, particle2 is the smaller 'B' particle
+
+def make_binary_lattice(points,particle1,particle2,newfile):
+    a=np.array([['type',0.0,0.0,0.0]])
+    x=status_matrix(particle1)
+    y=status_matrix(particle2)
+    A=points[0][0]
+    for p in points:
+        if (p[0]==A):
+            v=status_matrix_shifted(x,float(p[1]),float(p[2]),float(p[3]))
+            #print v
+            for i in range(0,len(v)):
+                a=np.append(a,[[v[i][0],v[i][1],v[i][2],v[i][3]]],axis=0)
+                #print 'wereked'
+        else:
+            v=status_matrix_shifted(y,float(p[1]),float(p[2]),float(p[3]))
+            #print v
+            #print 'dsfsdfasdfdasf'
+            for i in range(0,len(v)):
+                a=np.append(a,[[v[i][0],v[i][1],v[i][2],v[i][3]]],axis=0)
+    a=a[1:]
+    fout=open(newfile,'w')
+    fout.write(('%s \n \n')%(len(a)))
+    
+    for b in range(0,len(a)):
+        x=float(a[b][1])
+        y=float(a[b][2])
+        z=float(a[b][3])
+        fout.write(("%s %f %f %f\n")%(a[b][0],x,y,z))
         
 def particle_crystal(basefile,particlefile,newfile):
-    make_lattice(get_points(basefile),particlefile,newfile)
+    make_lattice(get_points_xyz(basefile),particlefile,newfile)
     
-basefile='base.xml'
+basefile='base.xyz'
 particle_file='Au201shellHC.xml'
 new_file='new.xyz'
 
