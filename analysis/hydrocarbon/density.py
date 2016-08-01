@@ -16,7 +16,7 @@ import distance_nth_carbon as dnc
 import V_distance as vd
 import util as u
 import rotate_vector as rv
-import nanoparticle_core as npc
+#import nanoparticle_core as npc
 ###########
 ##r_limit is the highest radius to be check
 #############

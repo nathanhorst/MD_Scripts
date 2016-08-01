@@ -24,7 +24,7 @@ if (lattice):
 
 ### dist_v_timestep(#dumpfiles,firstfile,secondfile,Lpoly-1) ###
 
-    y=dnc.dist_v_timestep(5,str(first),str(second),length-1)
+    y=dnc.dist_v_timestep(numfiles,str(first),str(second),length-1)
     u.write_array(y,'dist_12thC.txt')
     
     z=d.density_from_V(str(last),rstep,rmax,True)
