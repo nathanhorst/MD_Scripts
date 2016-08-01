@@ -95,10 +95,10 @@ def dist_v_timestep(nfiles,file1,file2):
             toopen=toopen + '0'
         toopen=toopen + str(file0) + '.xml'
         x=v_pos_matrix(toopen)
-        out=np.append(out,[[file0,u.part_distance(x[1],x[2],inputfile)]],axis=0)
+        out=np.append(out,[[file0,u.part_distance(x[1],x[2],toopen)]],axis=0)
     return out
     
-#nth.write_array(dist_v_timestep#(100,'atoms.dump.0000000000.xml','atoms.dump.0000100000.xml'),'distance.txt')
+#u.write_array(dist_v_timestep(34,'atoms.dump.0001500000.xml','atoms.dump.0001520000.xml'),'distance.txt')
 
 def type_pos_matrix(inputfile,typ):
     fin1= open(inputfile,'r')
@@ -164,3 +164,5 @@ def type_tags(inputfile,typ):
             tip=True
         elif(tipdone):
             return vnums
+
+#print v_pos_matrix('initialparticle_shift.xml')
