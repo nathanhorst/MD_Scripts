@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 """
 Created on Tue Jul  5 10:44:23 2016
-
 @author: waltmann
 """
 
@@ -137,8 +135,8 @@ t+=2e6
 del fire
 del fire_r
 
-run_time=3e5
-dumps_per_distance=3e4
+run_time=1e5
+dumps_per_distance=1e4
 n=dumps_per_distance
 dump_time=run_time/n
 xml = dump.xml(filename="atoms.dump", period=dump_time, restart=True, time_step=False)
@@ -147,13 +145,16 @@ integrate.mode_standard(dt=0.001)
 nonrigid_integrator=integrate.nvt(group=nonrigid,T=real_temp*kb,tau=.65)
 rigid_integrator=integrate.nvt_rigid(group=rigid,T=real_temp*kb,tau=.65)
 dcd = dump.dcd(filename='mixture.dcd', period=1000)
-
+reals=np.array([13.0])
 rs=np.array([13.0])
 H=np.array([-3.0]) 
-while(r>5.5):
+while(r>6.0):
 #while(r>12.9):
 #table.pair_coeff.set('V', 'V', func=dirac_potential, rmax=29, rmin = 0, coeff=dict(r0=r))
-    harmonic.set_coeff('V-V', k=10000.0, r0=r)
+    harmonic.set_coeff('V-V', k=50.0, r0=r)
+    integrate.mode_standard(dt=.001)
+    rigid_integrator.enable()
+    nonrigid_integrator.enable()
     #table.bond_coeff.set('V-V',func=dirac_bond, rmin=0, rmax=100,coeff=dict(kappa=300,r0=r))            
     for c in range(int(n)):
         run(dump_time)
@@ -162,11 +163,28 @@ while(r>5.5):
         w=np.subtract(z[2],z[1])
         w=u.length(w)
     	H=np.append(H,[w],axis=0)
-    r-=(1*distance_scale)
+    r-=(.2*distance_scale)
+    harmonic.set_coeff('V-V', k=10000.0, r0=r)
     rs=np.append(rs,[r],axis=0)
-    run(run_time/5)
+    run(4e4)
+    z=vd.v_pos_matrix('atoms.dump')
+    w=np.subtract(z[2],z[1])
+    w=u.length(w)
+    reals=np.append(reals,[w],axis=0)
+    rigid_integrator.disable()
+    nonrigid_integrator.disable()
+    fire = integrate.mode_minimize_fire(group=nonrigid,dt=0.005)
+    fire_r = integrate.mode_minimize_rigid_fire(group=rigid,dt=0.005)
+    run(1e4)
+    del fire
+    del fire_r
+    z=vd.v_pos_matrix('atoms.dump')
+    w=np.subtract(z[2],z[1])
+    w=u.length(w)
+    reals=np.append(reals,[w],axis=0)
 with open('H.txt','a') as myfile:
 	for i in range(1,len(H)):
 		myfile.write(str(H[i])+'\n')
 print rs
-
+print '\n'
+print reals
