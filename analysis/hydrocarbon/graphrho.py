@@ -21,7 +21,7 @@ print H
 v=u.histogram(H,int(10*3.96*10))
 v=v[1:]
 print v
-x = [float(row[0]) for row in v]
+x = [float(row[0])*3.96 for row in v]
 y1 = [float(row[1])/len(H) for row in v]
 
 

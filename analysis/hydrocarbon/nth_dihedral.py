@@ -186,11 +186,85 @@ def trans_v_timestep_lat(nfiles,file1,file2, nth, l,totalnp,nptocount):
             out=np.append(out,[[file0,trans_nth_dihedral_lat(toopen,nth,l,totalnp,nptocount)]],axis=0)
         #out=np.delete(out,0,0)
     return out
-"""   
-x=trans_v_timestep(97,'atoms.dump.0000500000.xml','atoms.dump.0000552083.xml',0, 13)
-for i in range(1,len(x)):
-    print(str(x[i][0])+ ' '+ str(x[i][1]))
-"""
+    
+    
+def trans_v_timestep_lat_matrix(nfiles,file1,file2,l,totalnp,nptocount):
+    file1=file1[11:-4]
+    file2=file2[11:-4]
+    out=np.zeros((nfiles,nptocount*80))
+    for c in range(0,nfiles):
+        file0=(int(file1)+(int(file2)-int(file1))*c)
+        toopen='atoms.dump.'
+        for v in range(0,10-len(str(file0))):
+            toopen=toopen + '0'
+        toopen=toopen + str(file0) + '.xml'
+        #print(toopen)
+        x=t.some_dihedral_angles(toopen,totalnp,nptocount)
+        for i in range(1,80*nptocount+1):
+            out[c][i-1]=x[i]
+        print file0
+    return out
+
+def trans_v_timestep_matrix(nfiles,file1,file2,l):
+    file1=file1[11:-4]
+    file2=file2[11:-4]
+    out=np.zeros((nfiles,80))
+    for c in range(0,nfiles):
+        file0=(int(file1)+(int(file2)-int(file1))*c)
+        toopen='atoms.dump.'
+        for v in range(0,10-len(str(file0))):
+            toopen=toopen + '0'
+        toopen=toopen + str(file0) + '.xml'
+        #print(toopen)
+        x=t.all_dihedral_angles(toopen)
+        for i in range(1,81):
+            out[c][i-1]=x[i]
+        print file0
+    return out
+    
+def trans_v_timestep_combine(file_of_files,nth,matrix,length):
+    towrite=np.array([['timestep',0.0]])
+    for i in range(1,len(file_of_files)):
+        towrite=np.append(towrite,[[file_of_files[i],nth_trans(matrix,nth,length)[i]]],axis=0)
+    return towrite
+
+
+def n_files(nfiles,file1,file2):
+    file1=file1[11:-4]
+    file2=file2[11:-4]
+    files=np.array(['filename'])
+    for c in range(0,nfiles):
+        file0=(int(file1)+(int(file2)-int(file1))*c)
+        toopen='atoms.dump.'
+        for v in range(0,10-len(str(file0))):
+            toopen=toopen + '0'
+        toopen=toopen + str(file0) + '.xml'
+        files=np.append(files,[file0],axis=0)
+    return files
+
+#print n_files(2,'atoms.dump.0000300000.xml','atoms.dump.0000500000.xml')    
+###matrix is the trans_v_timestep_lat_matrix
+def nth_trans(matrix,n,length):
+    out=np.array([0.0])
+    if (n==0):
+        for y in range(matrix.shape[0]):
+            total=0.0
+            for i in range(matrix.shape[1]):
+                if (np.abs(matrix[y][i])<=np.pi/3):
+                    total+=1.0
+            out=np.append(out,[total/matrix.shape[1]],axis=0)
+    else:
+        for y in range(matrix.shape[0]):
+            total=0.0
+            hits=0.0
+            for i in range(matrix.shape[1]):
+                if((i+1)%(length-3)==(n%(length-3))):
+                    hits+=1.0
+                    if (np.abs(matrix[y][i])<=np.pi/3):
+                        total+=1.0
+            out=np.append(out,[total/hits],axis=0)
+    return out
+
 
 
 def angle_v_timestep(nfiles,file1,file2, nth, l,):
