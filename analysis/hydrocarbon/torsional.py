@@ -20,9 +20,10 @@ def s2v(x,y,z):
     v=np.array([float(x),float(y),float(z)])
     return v
 
-
-##returns a list of all calculated dihedral angles
-
+"""
+returns a list of all calculated dihedral angles.
+called by functions in other files
+"""
 def all_dihedral_angles(inputfile):
     
     fin1= open(inputfile,'r')
@@ -71,7 +72,10 @@ def all_dihedral_angles(inputfile):
                 dihedral=False            
     return dhs  
             
-#print(all_dihedral_angles('atoms.dump.0019599999.xml'))                       
+"""
+another way to find all dihedral angles.
+believed to be slower than the original so it is not used.
+"""                     
 def all_dihedral_angles_new(inputfile):
     c=dnc.chain_pos_matrix(inputfile,['S','CH2','CH3'])
     dihedral=False
@@ -93,7 +97,11 @@ def all_dihedral_angles_new(inputfile):
     
 
 
-#meant to be used on lattices
+"""
+like the first function in this file but data processing is restricted to 
+improve the time for a lattice by only calclulating the angles on 
+some smaller number of nanoparticles
+"""
 
 def some_dihedral_angles(inputfile,totalnp,nptocount):
     fin1= open(inputfile,'r')
@@ -129,7 +137,7 @@ def some_dihedral_angles(inputfile,totalnp,nptocount):
     dhs=np.array([0.0])
     x=float(nptocount)/float(totalnp)
     #print x
-    print len(tipe)
+    #print len(tipe)
     for i in range(1,int(len(tipe)*x)):
         if(tipe[i]=='S'):
             dihedral=True

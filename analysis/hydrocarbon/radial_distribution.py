@@ -10,6 +10,12 @@ import util as u
 import numpy as np
 import density as d
 
+
+"""
+This finds the middle V in a lattice and the calculates all the V distances to it.
+Then returns the list.
+Most likely the radial_distribution of them will be checked next.
+"""
 def distance_array_V(inputfile):
     x=vd.v_pos_matrix(inputfile)
     d=[0.0,0.0,0.0]
@@ -28,6 +34,10 @@ def distance_array_V(inputfile):
     distance_array=np.sort(distance_array)
     return distance_array
 
+
+"""
+same as the function above but can be used for the chains
+"""
 def distance_array_chains(inputfile):
     typs=['S','CH2','CH3']
     s=vd.type_pos_matrix(inputfile,typs[0])
@@ -36,10 +46,14 @@ def distance_array_chains(inputfile):
     v=vd.v_pos_matrix(inputfile)
     x=d.closest_matrix_from_V(v,s,c2,c3,inputfile)
     return x
-        
+
+
+"""
+calculates the distribution of some list using the average of dirac_delta functions
+form util
+"""        
 def radial_distribution(matrix):
     v=matrix
-    print v
     #print v
     upper_limit=v[len(v)-1]+1
     lower_limit=0
@@ -62,4 +76,4 @@ def radial_distribution(matrix):
     #print total
     return total
 
-u.write_array(radial_distribution(distance_array_chains('atoms.dump.0001500000.xml')),'dd.txt')        
+#u.write_array(radial_distribution(distance_array_chains('atoms.dump.0001500000.xml')),'dd.txt')        

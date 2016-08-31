@@ -9,7 +9,10 @@ import matplotlib.pyplot as plt
 import radial_distribution as rad
 import util as u
 
-
+"""
+This graphs the rho sub i in the WHAM method for the pair force.
+It also prints out a H, which is the histogram not normallized by all the N states 
+"""
 
 with open("H.txt") as f:
     data = f.readlines()
@@ -17,7 +20,6 @@ H=np.array([-3.0])
 for row in data:
     H=np.append(H,[float(row.split()[0])],axis=0)
 H=H[1:]
-print H
 v=u.histogram(H,int(10*3.96*10))
 v=v[1:]
 print v

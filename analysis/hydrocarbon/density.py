@@ -17,14 +17,16 @@ import V_distance as vd
 import util as u
 import rotate_vector as rv
 #import nanoparticle_core as npc
-###########
-##r_limit is the highest radius to be check
-#############
 
-##############
-###r_step is the step by which the radii are checked
-#############
 
+
+"""
+r_limit is the highest radius to be check
+r_step is the step by which the radii are checked
+volume_division must be True in order to divide out the volume of the shell
+This function computes the distance from the nearest godl atom so it is very slow.
+Should only be used on a file of one nanoparticle
+"""
 def density(inputfile,r_step,r_limit,volume_divison):
     typs=['S','CH2','CH3']
     c=dnc.chain_pos_matrix(inputfile,typs)
@@ -42,7 +44,12 @@ def density(inputfile,r_step,r_limit,volume_divison):
         r_min=r_max
         r_max+=r_step
     return profile
-    
+ 
+"""
+This computes all the distances from the gold shell. 
+Slow
+called by density()
+"""   
 def closest_matrix(ppos_mat,Aupos_mat,inputfile):
     close_array=np.array([1000])
     for i in range(1,len(ppos_mat)):
@@ -55,7 +62,14 @@ def closest_matrix(ppos_mat,Aupos_mat,inputfile):
                 closest_distance=distance
         close_array=np.append(close_array,[closest_distance],axis=0)
     return close_array
-    
+
+
+
+"""
+This computes the distance matrix using the V particle which makes it much faster
+than computing the distance from the Au shell
+called by density_from_V
+"""    
 def closest_matrix_from_V(vpos_mat, spos_mat,c2pos_mat,c3pos_mat, inputfile):
     close_array=np.array([1000])
     v=vpos_mat[1:]
@@ -67,14 +81,21 @@ def closest_matrix_from_V(vpos_mat, spos_mat,c2pos_mat,c3pos_mat, inputfile):
     for i in range(0,(len(v))):
          a=np.array([float(v[i][0]),float(v[i][1]),float(v[i][2])])
          for su in range(0,f):
-                 b=np.array([float(s[su+i*f][0]),float(s[su+i*f][1]),float(s[su+i*f][2])])
-                 close_array=np.append(close_array,[u.length(np.subtract(a,b))],axis=0)
+                 #b=np.array([float(s[su+i*f][0]),float(s[su+i*f][1]),float(s[su+i*f][2])])
+                 #close_array=np.append(close_array,[u.length(np.subtract(a,b))],axis=0)
                  for x in range(0,n):
                      b=np.array([float(c2[x+n*su+n*f*i][0]),float(c2[x+n*su+n*f*i][1]),float(c2[x+n*su+n*f*i][2])])
                      close_array=np.append(close_array,[u.length(np.subtract(a,b))],axis=0)
                  b=np.array([float(c3[su+i*f][0]),float(c3[su+i*f][1]),float(c3[su+i*f][2])])
                  close_array=np.append(close_array,[u.length(np.subtract(a,b))],axis=0)
     return close_array
+
+"""
+This computes a position matrix from the V particle after re-orienting the nanoparticle
+such that the [110] planes are in line with x,y,and z axises
+This is called by density_cubeO_from_V()
+The idea is that once reoriented the density can be computed using truncated octahedral shells 
+"""
 
 def position_matrix_from_V(vpos_mat,Aupos_mat, spos_mat,c2pos_mat,c3pos_mat, inputfile):
     close_array=np.array([[100,100,100]])
@@ -108,6 +129,11 @@ def position_matrix_from_V(vpos_mat,Aupos_mat, spos_mat,c2pos_mat,c3pos_mat, inp
              close_array=np.append(close_array,[np.subtract(rv.move_point(thetax,thetay,thetaz,b),a)],axis=0)
     return close_array
 
+"""
+This computes the deinsty from V particles. Best version of the density in terms
+of speed and meaning info. 
+"""
+
 def density_from_V(inputfile,r_step,r_limit,volume_divison):
     v=vd.type_pos_matrix(inputfile,'V')
     s=vd.type_pos_matrix(inputfile,'S')
@@ -125,6 +151,13 @@ def density_from_V(inputfile,r_step,r_limit,volume_divison):
         r_min=r_max
         r_max+=r_step
     return profile
+
+"""
+This computes the density in truncated octahedral shells. 
+It has been decided this is basically useless.
+Must uncomment the import of nanoparticle_core at the top to use.
+Probably don"t use it though
+"""
 
 def density_cubeO_from_V(inputfile,r_step,r_limit,volume_divison):
     v=vd.type_pos_matrix(inputfile,'V')
@@ -150,7 +183,13 @@ def density_cubeO_from_V(inputfile,r_step,r_limit,volume_divison):
         total+=float(profile[i][1])
     #print total
     return profile
-    
+
+
+"""
+called by density() and density_from_V() to compute the number of particles 
+in a certain shell.
+Does the volume division.
+"""    
 def one_density(close_array,r_min,r_max):
     particles=0.0
     for i in range(1,len(close_array)):
@@ -160,7 +199,11 @@ def one_density(close_array,r_min,r_max):
     x=float(particles)/volume
     #print x
     return x
-
+"""
+called by density() and density_from_V() to compute the number of particles 
+in a certain shell.
+Does not do the volume division.
+""" 
 def one_density_no_volume(close_array,r_min,r_max):
     particles=0.0
     for i in range(1,len(close_array)):
@@ -168,6 +211,10 @@ def one_density_no_volume(close_array,r_min,r_max):
             particles+=1
     return particles
 
+"""
+Called by density_cubeO_from_V() to compute the number of particles 
+in a truncated octahedral shell. NO volume division
+"""
 def one_cubeO_density_no_volume(close_array,r_min,r_max):
     particles=0.0
     mi=npc.NanoFcc(2.5,r_min/2.0)
@@ -178,7 +225,11 @@ def one_cubeO_density_no_volume(close_array,r_min,r_max):
     del mi
     del ma
     return particles
-        
+    
+"""
+Called by density_cubeO_from_V() to compute the number of particles 
+in a truncated octahedral shell.volume division is performed
+"""        
 def one_cubeO_density(close_array,r_min,r_max):
     particles=0.0
     mi=npc.NanoFcc(2.5,r_min/2.0)
@@ -192,9 +243,14 @@ def one_cubeO_density(close_array,r_min,r_max):
     del ma
     return x   
         
-distance_scale=1.0/3.96
+
 #u.write_array(density('atoms.dump.0000799968.xml', distance_scale/5, 30*distance_scale,True),'dense.txt')
 
+
+"""
+returns a list of intermolecular angles from the v particles to each S to the nth carbon
+List should be analyzed using some sort of distribution function in util or radial_distribution
+"""
 def inter_angle(inputfile,n):
     typs=['S','CH2','CH3']
     angle_list=np.array([-500])
@@ -222,13 +278,29 @@ def inter_angle(inputfile,n):
         angle_list=angle_list[1:]
         return angle_list
 
-      
+"""
+called by inter_angle to compute the angle from a v to an s to a c.
+radially is defined as 0 degrees.
+The way this is being defined may change in the future.
+v,s,c are position matrixes [x,y,z]
+"""      
 def angle_between(v,s,c):
     normal=np.subtract(s,v)
     inter=np.subtract(c,s)
-    theta=np.arccos(np.dot(normal,inter)/(vd.length(normal)*vd.length(inter)))
+    theta=np.arccos(np.dot(normal,inter)/(u.length(normal)*u.length(inter)))
     theta=np.degrees(theta)
     return theta
 
 
-#nd.write_array(normal_distribution(inter_angle('atoms.dump.0005000000.xml',3)),'dense.txt')
+"""
+file_list should be nd.nfiles
+n is which carbon 0=all
+"""
+
+def inter_angle_all_files(file_list,n):
+    angle_list=[-500]    
+    for i in range(1,len(file_list)):
+        angle_list=np.append(angle_list,inter_angle(file_list[i],n),axis=0)
+    return angle_list[1:]
+
+        

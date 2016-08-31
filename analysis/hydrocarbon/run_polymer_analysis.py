@@ -2,50 +2,56 @@ import nth_dihedral as nd
 import distance_nth_carbon as dnc
 import density as d
 import util as u
+import intermolecular_angle as ia
 
-first='atoms.dump.0000300000.xml'
-second='atoms.dump.0000500000.xml'
-numfiles=5
-last='atoms.dump.0001100000.xml'
-lattice=True
-rstep=0.8/3.96
-rmax=6.0
+lattice=False
+
+numfiles=50
+first='atoms.dump.0004500000.xml'
+second='atoms.dump.0004600000.xml'
 totalnp=32
 nptocount=1
 #length includes head and end groups
 length=13
 
+last='atoms.dump.0009400000.xml'
+rstep=0.5/3.96
+rmax=6.0
+volume_division=True
+
+boxes=50
+
 if (lattice):
-    for i in range(length-2):
-        x=nd.trans_v_timestep_lat(numfiles,str(first),str(second),i,length,totalnp,nptocount)
-        u.write_array(x,'trans_Tvar'+str(i)+'.txt')
-    #print i
-
-
-### dist_v_timestep(#dumpfiles,firstfile,secondfile,Lpoly-1) ###
-
-    y=dnc.dist_v_timestep(numfiles,str(first),str(second),length-1)
-    u.write_array(y,'dist_12thC.txt')
     
-    z=d.density_from_V(str(last),rstep,rmax,True)
+    x=nd.trans_v_timestep_lat_matrix(numfiles,first,second, length,totalnp,nptocount)
+    y=nd.n_files(numfiles,first,second)
+    for i in range(0,length-2):
+        u.write_array(nd.trans_v_timestep_combine(y,i,x,length),'trans_Tvar'+str(i)+'.txt') 
+    
+    x= dnc.dist_v_timestep_lat_matrix(numfiles,first,second,length,totalnp,nptocount)
+    y= u.n_files(numfiles,first,second)    
+    for i in range(1,length):
+        u.write_array(dnc.nth_distance_lat(y,i,x,length),'dist'+str(i)+'thC.txt')
+    
+    z=d.density_from_V(str(last),rstep,rmax,volume_division)
     u.write_array(z,'density.txt')
 
-#a=d.histogram(d.inter_angle(last,12),30)
-#u.write_array(a,'angle12thC.txt')
+   
 
 else:
-    for i in range(length-2):
-        x=nd.trans_v_timestep(numfiles,str(first),str(second),i,length)
-        u.write_array(x,'trans_Tvar'+str(i)+'.txt')
+    x=nd.trans_v_timestep_matrix(numfiles,first,second, length)
+    y=nd.n_files(numfiles,first,second)
+    for i in range(0,length-2):
+        u.write_array(nd.trans_v_timestep_combine(y,i,x,length),'trans_Tvar'+str(i)+'.txt') 
 
-
-### dist_v_timestep(#dumpfiles,firstfile,secondfile,Lpoly-1) ###
-
-    y=dnc.dist_v_timestep(numfiles,str(first),str(second),length-1)
-    u.write_array(y,'dist_12thC.txt')
+    x= dnc.dist_v_timestep_lat_matrix(numfiles,first,second,length,1,1)
+    y= nd.n_files(numfiles,first,second)    
+    for i in range(1,length):
+        u.write_array(dnc.nth_distance_lat(y,i,x,length),'dist'+str(i)+'thC.txt')
     
-    z=d.density_from_V(str(last),rstep,rmax,True)
+    
+    z=d.density_from_V(str(last),rstep,rmax,volume_division)
     u.write_array(z,'density.txt')
 
-#a=d.histogram(d.inter_angle(last,12),30)
-#u.write_array(a,'angle12thC.txt')
+    a=u.histogram(ia.inter_angle(last,length-1),boxes)
+    u.write_array(a,'angle12thC.txt')
