@@ -11,9 +11,11 @@ import sys
 import numpy as np
 from numpy import linalg as LA
 import util as u
-#### the p inputs are positions in 3 dimensional space [x,y,z]
-##should go in order of closest to nanoparticle first
 
+"""
+the p inputs are positions in 3 dimensional space [x,y,z]
+should go in order of closest to nanoparticle first
+"""
 def dihedral_angle(p1,p2,p3,p4,inputfile):
     b1 = -1.0*u.part_vector(p1,p2,inputfile)
     #b2 = p3 - p2

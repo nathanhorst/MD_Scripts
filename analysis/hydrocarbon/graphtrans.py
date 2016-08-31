@@ -43,7 +43,12 @@ y8 = [float(row.split()[1])*100.0 for row in data7]
 y9 = [float(row.split()[1])*100.0 for row in data8]
 y10 = [float(row.split()[1])*100.0 for row in data9]
 y11 = [float(row.split()[1])*100.0 for row in data10]
-
+total=0
+runs=0
+for row in data:
+	total+=float(row.split()[1])
+	runs+=1 
+print 'average trans is ' +str(total/runs)
 fig1 = plt.figure()
 
 ax1 = fig1.add_subplot(111)

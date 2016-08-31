@@ -18,9 +18,10 @@ for row in data:
 		peak=float(s[1])
 		length=float(s[0])
 
-#print length
-#print peak
-
+"""
+3.96 multiplication converts all distances to angstroms.
+dividing by the peak normalizes all heights to the highest height
+"""
 x = [(float(row.split()[0]))*3.96 for row in data]
 y1 = [(float(row.split()[1]))/peak for row in data]
 

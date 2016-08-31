@@ -10,6 +10,11 @@ from numpy import linalg as LA
 import numpy as np
 import util as u
 
+"""
+returns  a matrix containing the posiitons of all the V particle in the order
+they are found in the file.
+"""
+
 def v_pos_matrix(inputfile):
     fin1= open(inputfile,'r')
     f1data=fin1.read()
@@ -55,11 +60,11 @@ def v_pos_matrix(inputfile):
 
 
 
-
-###this function should return an array of nearest neighbor distances for 
-## each particle with the position of the distnace corresponding to the
-### original position of the particle in the input array
-
+"""
+this function should return an array of nearest neighbor distances for 
+ each particle with the position of the distnace corresponding to the
+ original position of the particle in the input array
+"""
 def n_neighbor_vector_list(v_pos_mat,inputfile):
     distance=[[0.0,0.0,0.0]]
     for i in range(1,len(v_pos_mat)):
@@ -72,7 +77,10 @@ def n_neighbor_vector_list(v_pos_mat,inputfile):
         distance=np.append(distance,[minvec],axis=0)
     return distance
  
-
+"""
+returns a list of all the particle sneaet neighbor ditstnace in the order the  particles
+are found in the V-pos-matrix/file
+"""
 def n_neighbor_distance_list(v_pos_mat,inputfile):
      distance=[]
      for i in range(1,len(v_pos_mat)):
@@ -84,6 +92,10 @@ def n_neighbor_distance_list(v_pos_mat,inputfile):
      return distance
     
 #print(n_neighbor_distance_list(v_pos_matrix('Lat108_25_Fcc.xml'),'Lat108_25_Fcc.xml'))   
+"""
+meant to be used for pair force as it only does the distance between the first two particles in the file/matrix
+"""
+
 def dist_v_timestep(nfiles,file1,file2):
     file1=file1[11:-4]
     file2=file2[11:-4]
@@ -99,7 +111,9 @@ def dist_v_timestep(nfiles,file1,file2):
     return out
     
 #u.write_array(dist_v_timestep(34,'atoms.dump.0001500000.xml','atoms.dump.0001520000.xml'),'distance.txt')
-
+"""
+V_pos_matrix ,but for whatever type you specify. typ is a string that is the same as who it is in the file
+"""
 def type_pos_matrix(inputfile,typ):
     fin1= open(inputfile,'r')
     f1data=fin1.read()
@@ -141,6 +155,10 @@ def type_pos_matrix(inputfile,typ):
             for x in range(1,len(vnums)):
                 v_position=np.append(v_position,[position[vnums[x]]], axis=0)
             return v_position
+"""
+basically returns an array of whatever position in the file of all atoms the atoms of that specific type
+are. useful for 2.0 rigid body declaration.
+"""            
 def type_tags(inputfile,typ):
     fin1= open(inputfile,'r')
     f1data=fin1.read()
