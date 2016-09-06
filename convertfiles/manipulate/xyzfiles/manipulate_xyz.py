@@ -13,7 +13,7 @@ import numpy as np
 ### This function simply copies an xyz file, and renames the particle types
 ###########################################################################
  
-def rename_xyz(save,read,name):
+def rename_xyz(save,read,oldname,newname):
      
      fid = open(save,'w')
      inputfile = open(read,'r')
@@ -24,8 +24,10 @@ def rename_xyz(save,read,name):
      fid.write(('%s \n \n')%(num))
      for line in data2:
          s = line.split()
-         fid.write(('%s %s %s %s \n')%(name,s[1],s[2],s[3])) 
-        
+         if s[0] == oldname:
+             fid.write(('%s %s %s %s \n')%(newname,s[1],s[2],s[3])) 
+         else:
+             fid.write(('%s %s %s %s \n')%(s[0],s[1],s[2],s[3]))
 ##############################################################################
 ### This function scales the positions of xyz files in the x y or z directions
 ##############################################################################
