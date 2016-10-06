@@ -5,6 +5,8 @@ import util as u
 import intermolecular_angle as ia
 
 lattice=False
+numsites=62
+
 
 numfiles=50
 first='atoms.dump.0004500000.xml'
@@ -28,7 +30,7 @@ if (lattice):
     for i in range(0,length-2):
         u.write_array(nd.trans_v_timestep_combine(y,i,x,length),'trans_Tvar'+str(i)+'.txt') 
     
-    x= dnc.dist_v_timestep_lat_matrix(numfiles,first,second,length,totalnp,nptocount)
+    x= dnc.dist_v_timestep_lat_matrix(numfiles,first,second,length,totalnp,nptocount,numsites)
     y= u.n_files(numfiles,first,second)    
     for i in range(1,length):
         u.write_array(dnc.nth_distance_lat(y,i,x,length),'dist'+str(i)+'thC.txt')
@@ -44,11 +46,15 @@ else:
     for i in range(0,length-2):
         u.write_array(nd.trans_v_timestep_combine(y,i,x,length),'trans_Tvar'+str(i)+'.txt') 
 
-    x= dnc.dist_v_timestep_lat_matrix(numfiles,first,second,length,1,1)
+    x= dnc.dist_v_timestep_lat_matrix(numfiles,first,second,length,1,1,numsites)
     y= nd.n_files(numfiles,first,second)    
     for i in range(1,length):
         u.write_array(dnc.nth_distance_lat(y,i,x,length),'dist'+str(i)+'thC.txt')
     
+    x= dnc.dist_c_c_v_timestep_lat_matrix(numfiles,first,second,length,1,1,numsites)
+    y= nd.n_files(numfiles,first,second)    
+    for i in range(1,length):
+        u.write_array(dnc.nth_distance_lat(y,i,x,length),'dist_'+str(i-1)+'_'+str(i)+'.txt')
     
     z=d.density_from_V(str(last),rstep,rmax,volume_division)
     u.write_array(z,'density.txt')

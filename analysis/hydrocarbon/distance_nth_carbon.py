@@ -102,6 +102,23 @@ def new_distance_to_nth_carbon(inputfile,nth):
 
 
 """
+last is the number of carbons 12,18,9
+"""
+
+
+def distance_carbon_to_carbon(inputfile,first,last):
+    typs=['S','CH2','CH3']
+    x=nth_carbon_pos_matrix(inputfile,last,typs)
+    y=nth_carbon_pos_matrix(inputfile,first,typs)
+    total=0
+    for i in range(1,len(y)):
+        xn=np.array([float(x[i][0]),float(x[i][1]),float(x[i][2])])
+        yn=np.array([float(y[i][0]),float(y[i][1]),float(y[i][2])])
+        total+=u.part_distance(xn,yn,inputfile)
+    return float(total)/float(len(y)-1)
+    
+
+"""
 does the same thing as new_distance_nth_carbon, but returns a list of all the distances.
 can be graphed as a distribution using util or radial_distribution
 """    
@@ -142,11 +159,11 @@ Good for constant runs not for interpolations
 def dist_average_of_files(nfiles,file1,file2, nth):
     avefile=0.0
     total=0.0
-    file1=file1[6:-4]
-    file2=file2[6:-4]
+    file1=file1[11:-4]
+    file2=file2[11:-4]
     for c in range(0,nfiles):
         file0=(int(file1)+(int(file2)-int(file1))*c)
-        toopen='atoms.'
+        toopen='atoms.dump.'
         for v in range(0,10-len(str(file0))):
             toopen=toopen + '0'
         toopen=toopen + str(file0) + '.xml'
@@ -166,18 +183,36 @@ Also not good for calling in a loop for all
 """
     
 def dist_v_timestep(nfiles,file1,file2, nth):
-    file1=file1[6:-4]
-    file2=file2[6:-4]
+    file1=file1[11:-4]
+    file2=file2[11:-4]
     out=np.array([[0.0,0.0]])
     for c in range(0,nfiles):
         file0=(int(file1)+(int(file2)-int(file1))*c)
-        toopen='atoms.'
+        toopen='atoms.dump.'
         for v in range(0,10-len(str(file0))):
             toopen=toopen + '0'
         toopen=toopen + str(file0) + '.xml'
         x=new_distance_to_nth_carbon(toopen,nth)
         out=np.append(out,[[file0,x]],axis=0)
     return out
+
+
+
+
+def dist_c_c_v_timestep(nfiles,file1,file2,first,last):
+    file1=file1[11:-4]
+    file2=file2[11:-4]
+    out=np.array([[0.0,0.0]])
+    for c in range(0,nfiles):
+        file0=(int(file1)+(int(file2)-int(file1))*c)
+        toopen='atoms.dump.'
+        for v in range(0,10-len(str(file0))):
+            toopen=toopen + '0'
+        toopen=toopen + str(file0) + '.xml'
+        x=distance_carbon_to_carbon(toopen,first,last)
+        out=np.append(out,[[file0,x]],axis=0)
+    return out
+
 
 """
 This is the function to use for lattices. 
@@ -191,14 +226,14 @@ Good for running nth_distance_lat in loops overall distances, because this funct
 needs to be called once and it takes all the time. 
 """
     
-def dist_v_timestep_lat_matrix(nfiles,file1,file2,length,totalnp,nptocount):
+def dist_v_timestep_lat_matrix(nfiles,file1,file2,length,totalnp,nptocount,numsites):
     typs=['S','CH2','CH3']    
-    file1=file1[6:-4]
-    file2=file2[6:-4]
-    out=np.zeros((nfiles,nptocount*(length-1)*80))
+    file1=file1[11:-4]
+    file2=file2[11:-4]
+    out=np.zeros((nfiles,nptocount*(length-1)*numsites))
     for c in range(0,nfiles):
         file0=(int(file1)+(int(file2)-int(file1))*c)
-        toopen='atoms.'
+        toopen='atoms.dump.'
         for v in range(0,10-len(str(file0))):
             toopen=toopen + '0'
         toopen=toopen + str(file0) + '.xml'
@@ -218,6 +253,36 @@ def dist_v_timestep_lat_matrix(nfiles,file1,file2,length,totalnp,nptocount):
     return out
     
     
+    
+    
+    
+def dist_c_c_v_timestep_lat_matrix(nfiles,file1,file2,length,totalnp,nptocount,numsites):
+    typs=['S','CH2','CH3']    
+    file1=file1[11:-4]
+    file2=file2[11:-4]
+    out=np.zeros((nfiles,nptocount*(length-1)*numsites))
+    for c in range(0,nfiles):
+        file0=(int(file1)+(int(file2)-int(file1))*c)
+        toopen='atoms.dump.'
+        for v in range(0,10-len(str(file0))):
+            toopen=toopen + '0'
+        toopen=toopen + str(file0) + '.xml'
+        print('Calculating C-C Distance for timestep '+str(file0)+ ' '+ str(c+1)+'/' +str(nfiles))
+        ch=chain_pos_lat_matrix(toopen,typs,totalnp,nptocount)
+        #print ch
+        beforepos=[0,0,0]
+        cpos=[0,0,0]
+        count=0
+        for i in range(1,len(ch)):
+            if(ch[i][0]==typs[0]):
+                cpos=[float(ch[i][1]),float(ch[i][2]),float(ch[i][3])]
+            else:
+                beforepos=cpos
+                cpos=[float(ch[i][1]),float(ch[i][2]),float(ch[i][3])]
+                out[c][count]=u.part_distance(beforepos,cpos,toopen)
+                count+=1
+    return out
+        
 """
 dvtlm is the dist_v_timestep_lat_matirix
 This is good to run in a loop to process all the nth carbons in the dvtlm,

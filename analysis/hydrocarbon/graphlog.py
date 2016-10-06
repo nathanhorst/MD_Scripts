@@ -7,12 +7,10 @@ edited ssh
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 ncore=141
 nchains=62
 Lchains=13
 nparts=1
-
 N=nparts*(nchains*(Lchains-1)+1)
 
 with open("mylog.log") as f:
@@ -28,6 +26,19 @@ y5 =[row.split()[5] for row in data]
 y6 =[float(row.split()[6])*(0.002872) for row in data]
 y7 =[float(row.split()[7])*(0.002872) for row in data]
 y8 =[float(row.split()[8])*(0.002872) for row in data]
+y9=np.subtract(y2,np.add(y7,y8))
+
+
+t1=4500000
+t2=4995000
+total=0
+count=0
+for c in range(len(y2)):
+	if(float(x[c])>=t1 and float(x[c])<=t2):
+		count+=1
+		total+=float(y9[c])
+total=total/count
+print total
 
 fig1 = plt.figure()
 fig2 = plt.figure()
@@ -72,6 +83,7 @@ ax1.plot(x,y3, c='g', label='KE')
 ax2.plot(x,y6, c='r', label='LJ')
 ax2.plot(x,y7, c='blue', label='bond')
 ax2.plot(x,y8, c='g', label='angle')
+ax2.plot(x,y9, c='orange', label='Lj+DIHEDRAL')
 
 leg1 = ax1.legend()
 leg2 = ax2.legend()
