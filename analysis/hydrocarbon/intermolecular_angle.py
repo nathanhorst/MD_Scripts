@@ -40,7 +40,7 @@ def inter_angle(inputfile,n):
             cn=np.array([float(c[i][0]),float(c[i][1]),float(c[i][2])])
             g=(len(c))/(len(v)-1)
             d=1+ int(i-1)/g
-            vn=np.subtract(cn,sn)
+            vn=u.part_vector(cn,sn,inputfile)
             vector_list=np.append(vector_list,[vn],axis=0)
         #print vector_list
         for x in range(1,len(vector_list)):
