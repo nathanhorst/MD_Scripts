@@ -81,11 +81,11 @@ def np_seperate_to_forces(numbnp,arr):
 def force_average_of_files(nfiles,file1,file2):
     total=0.0
     avefile=0.0
-    file1=file1[11:-4]
-    file2=file2[11:-4]
+    file1=file1[6:-4]
+    file2=file2[6:-4]
     for c in range(0,nfiles):
         file0=(int(file1)+(int(file2)-int(file1))*c)
-        toopen='atoms.dump.'
+        toopen='atoms.'
         for v in range(0,10-len(str(file0))):
             toopen=toopen + '0'
         toopen=toopen + str(file0) + '.xml'

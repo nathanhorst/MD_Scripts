@@ -7,6 +7,14 @@ edited ssh
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+ncore=141
+nchains=62
+Lchains=13
+nparts=1
+
+N=nparts*(nchains*(Lchains-1)+1)
+
 with open("mylog.log") as f:
     data = f.readlines()
     data = data[2:]
@@ -14,7 +22,7 @@ with open("mylog.log") as f:
 x = [row.split()[0] for row in data]
 y1 = [row.split()[1] for row in data]
 y2 =[float(row.split()[2])*(0.002872) for row in data]
-y3 = [float(row.split()[3])*(2./(3.*962.*32)) for row in data]
+y3 = [float(row.split()[3])*(2./(3.*N)) for row in data]
 y4 =[row.split()[4] for row in data]
 y5 =[row.split()[5] for row in data]
 y6 =[float(row.split()[6])*(0.002872) for row in data]

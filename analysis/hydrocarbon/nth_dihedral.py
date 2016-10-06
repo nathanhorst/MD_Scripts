@@ -143,11 +143,11 @@ def average_trans_lat(inputfile,totalnp,nptocount):
 def trans_average_of_files(nfiles,file1,file2, nth, l):
     total=0.0
     avefile=0.0
-    file1=file1[11:-4]
-    file2=file2[11:-4]
+    file1=file1[6:-4]
+    file2=file2[6:-4]
     for c in range(0,nfiles):
         file0=(int(file1)+(int(file2)-int(file1))*c)
-        toopen='atoms.dump.'
+        toopen='atoms.'
         for v in range(0,10-len(str(file0))):
             toopen=toopen + '0'
         toopen=toopen + str(file0) + '.xml'
@@ -172,12 +172,12 @@ If n=0, it will do all the dihedrals no matter which one they are
 """
 
 def trans_v_timestep(nfiles,file1,file2, nth, l):
-    file1=file1[11:-4]
-    file2=file2[11:-4]
+    file1=file1[6:-4]
+    file2=file2[6:-4]
     out=np.array([[0.0,0.0]])
     for c in range(0,nfiles):
         file0=(int(file1)+(int(file2)-int(file1))*c)
-        toopen='atoms.dump.'
+        toopen='atoms.'
         for v in range(0,10-len(str(file0))):
             toopen=toopen + '0'
         toopen=toopen + str(file0) + '.xml'
@@ -193,12 +193,12 @@ def trans_v_timestep(nfiles,file1,file2, nth, l):
 same as trans_v_timestep, but cuts off the deadweight using totalnp and nptocount
 """    
 def trans_v_timestep_lat(nfiles,file1,file2, nth, l,totalnp,nptocount):
-    file1=file1[11:-4]
-    file2=file2[11:-4]
+    file1=file1[6:-4]
+    file2=file2[6:-4]
     out=np.array([[0.0,0.0]])
     for c in range(0,nfiles):
         file0=(int(file1)+(int(file2)-int(file1))*c)
-        toopen='atoms.dump.'
+        toopen='atoms.'
         for v in range(0,10-len(str(file0))):
             toopen=toopen + '0'
         toopen=toopen + str(file0) + '.xml'
@@ -219,12 +219,12 @@ and trnas_v_timestep_combine. This will get a matrix like the ones in the other 
 Examples in run_polymer_analysis
 """    
 def trans_v_timestep_lat_matrix(nfiles,file1,file2,l,totalnp,nptocount):
-    file1=file1[11:-4]
-    file2=file2[11:-4]
+    file1=file1[6:-4]
+    file2=file2[6:-4]
     out=np.zeros((nfiles,nptocount*80))
     for c in range(0,nfiles):
         file0=(int(file1)+(int(file2)-int(file1))*c)
-        toopen='atoms.dump.'
+        toopen='atoms.'
         for v in range(0,10-len(str(file0))):
             toopen=toopen + '0'
         toopen=toopen + str(file0) + '.xml'
@@ -242,12 +242,12 @@ is most efficient when you wanna figure out all the nths in a loop
 """
 
 def trans_v_timestep_matrix(nfiles,file1,file2,l):
-    file1=file1[11:-4]
-    file2=file2[11:-4]
+    file1=file1[6:-4]
+    file2=file2[6:-4]
     out=np.zeros((nfiles,80))
     for c in range(0,nfiles):
         file0=(int(file1)+(int(file2)-int(file1))*c)
-        toopen='atoms.dump.'
+        toopen='atoms.'
         for v in range(0,10-len(str(file0))):
             toopen=toopen + '0'
         toopen=toopen + str(file0) + '.xml'
@@ -275,12 +275,12 @@ msut be called with the same file parameters that you called the trans_v_timeste
 in order to recombine correctly
 """
 def n_files(nfiles,file1,file2):
-    file1=file1[11:-4]
-    file2=file2[11:-4]
+    file1=file1[6:-4]
+    file2=file2[6:-4]
     files=np.array(['filename'])
     for c in range(0,nfiles):
         file0=(int(file1)+(int(file2)-int(file1))*c)
-        toopen='atoms.dump.'
+        toopen='atoms.'
         for v in range(0,10-len(str(file0))):
             toopen=toopen + '0'
         toopen=toopen + str(file0) + '.xml'
@@ -324,12 +324,12 @@ n=0 means all dihedrals.
 Not 100% sure this is working
 """
 def angle_v_timestep(nfiles,file1,file2, nth, l,):
-    file1=file1[11:-4]
-    file2=file2[11:-4]
+    file1=file1[6:-4]
+    file2=file2[6:-4]
     out=np.array([[0.0,0.0]])
     for c in range(0,nfiles):
         file0=(int(file1)+(int(file2)-int(file1))*c)
-        toopen='atoms.dump.'
+        toopen='atoms.'
         for v in range(0,10-len(str(file0))):
             toopen=toopen + '0'
         toopen=toopen + str(file0) + '.xml'
