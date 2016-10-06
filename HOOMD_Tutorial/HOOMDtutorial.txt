@@ -1,0 +1,114 @@
+This is a tutorial for use with HOOMD v1.3.3
+
+######################
+INSTALLATION / SETUP
+######################
+
+MINICONDA
+Go to the miniconda page and download miniconda.
+	http://conda.pydata.org/miniconda.html	
+
+Run the bash installer to install miniconda.
+	$ bash Miniconda2-latest-Linux-x86_64.sh
+
+Go through the Miniconda tutorial, to familiarlize yourself with how the program works.
+	http://conda.pydata.org/docs/test-drive.html
+
+HOOMD
+set up an environment and install hoomd v1.3.3 and matplotlib
+	$ conda create --name hoomdenv hoomd=1.3.3 matplotlib
+
+Restart the terminal and activate the hoomd environment
+
+VMD
+Install VMD from the following link, in order to visualize the simulations.
+	http://www.ks.uiuc.edu/Research/vmd/
+
+###############
+HOOMD tutorial
+###############
+
+To run hoomd, one must simply make a python script and execute the HOOMD code as below:
+	$ hoomd script.py
+
+To run an example script, simply enter the directory containing "script.py", activate the conda environment containing HOOMD,  and execute the above command.
+
+Now, run the code above with HOOMD and look at the output.
+If successful, you should the text ** run complete ** at the bottom of the terminal.
+
+The simulation also outputs information about where, how fast and how long the simulation runs, and error messages that can help you diagnose any problems that the simulation may be having.
+#######################
+
+The example code you just ran is a small Lennard-Jones (LJ) melt with 100 randomly initialized particles of the same type.
+Let's break this simple code down line by line, to try and understand what is going on.
+
+## from hoomd_script import *
+This line is a necessary inclusion as the first line of every script in order to implement HOOMD.
+
+## init.create_random(N=100, phi_p=0.1)
+initialize 100 random particles in the simulation box, at a packing fraction of 0.1.
+
+## lj = pair.lj(r_cut=2.5)
+define the lj pair potential with a cutoff of 2.5 distance units
+
+## lj.pair_coeff.set('A', 'A', epsilon=1.0, sigma=1.0)
+set the coefficients of the LJ interaction, between particles of type A.
+
+## integrate.mode_standard(dt=0.005)
+set the timestep of the simulation to 0.005
+
+## integrate.nvt(group=all, T=1.2, tau=0.5)
+set the integrator of the simulation to run on all particles, at a temperature of 1.2 kT
+
+##run(10000)
+run the simulation for 10000 timesteps
+
+###################
+
+At this point, you still haven't figured out what the simulation is telling you, so we will be adding a few things to the script to help us understand what is going on.
+
+First, we need to log some data that we can look at more closely, in this example we will look at the potential energy. Do this by adding the following line to your script, before the run statement:
+	logger = analyze.log(filename='mylog.log', period=100, quantities=['potential_energy'], overwrite=True)
+
+Now rerun the simulation. This time, HOOMD will create a file called "mylog.log". This file will contain the potential energy of the system for each logged timestep of the system. Take a look at it by opening it with gedit. 
+
+####################
+
+To make a graph of this energy, we will make use of the program matplotlib. For this, you will need the file graphlog.py, which can be executed as a python script.
+	$ python graphlog.py
+
+Once you've graphed the energy, try logging other quantities and graphing them as well. Additional quantities can be found in the HOOMD documentation. 
+
+####################
+
+Now we want to be able to visualize the system that we are running with VMD. In order to do this, we need to be able to output a system trajectory and a file that contains the coordinates of the atoms.
+
+The first step towards visualizing the system is to output a file that contains the coordinates of our system. To do this, add the following lines to the script, as always, before the run statement.
+
+	xml = dump.xml(filename="atoms", period=10000)
+	xml.set_params(all=True)
+
+When you run the simulation this time, HOOMD will output a structure file that corresponds to the state of the system at the indicated timestep. We can use this file to visualize the system using VMD. To do this, open VMD and import the file as a new molecule in the HOOMD XML format file. You should be able to see the system of 100 particles in the visualization pane.
+
+#####################
+
+Now that you have visualized the system, the next step is to see the system in action. To do this, we are going to make a few more changes to our script. 
+
+First, using the LINUX terminal, copy the structure file you just made to a blank file named "initstructure.xml". This way we have the initial file saved, so it will not be overwritted by HOOMD.
+
+Next, we need to import the structure file that we just looked at as the initial state of our system.
+Add the following line to the script, in the place of the "create_random" line.
+	system = init.read_xml(filename="initstructure.xml")
+
+We also want to output the trajectory of the system, during the course of the simulation.
+To do this, add the following line to 'script.py', after the logger.
+	dcd = dump.dcd(filename='mixture.dcd', period=100, overwrite=True)
+
+When you rerun the simulation this time, an additional file will be created that can be used to visualize the working simulation. To visualize this trajectory, import "initstructure.xml" into VMD, and additionally load "mixture.dcd" as a file for that molecule. If you are successful, you should see the system moving around according to the trajectory you just loaded. This movie can be repeated, slowed down, and paused from the VMD main window. 
+#####################
+
+Now you've accomplished the basic mechanics of HOOMD. If you are still uncomfortable with the things you have done in this tutorial, spend a little time at each step messing around with the tools that you are using. Feel free to change parameters and see how the system reacts to the change, using VMD and Matplotlib as tools to help you analyze the system and visualize what is happening. If you feel comfortable with everything in the tutorial, try creating a few of your own systems, perhaps with multiple particle types or by adding harmonic bonds between a few particles.
+
+#####################
+#####################
+#####################

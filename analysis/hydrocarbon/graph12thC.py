@@ -7,7 +7,7 @@ Created on Thu Mar 31 11:32:15 2016
 import numpy as np
 import matplotlib.pyplot as plt
 
-with open("dist_12thC.txt") as f:
+with open("dist12thC.txt") as f:
     data = f.readlines()
 
 x = [float(row.split()[0]) for row in data]

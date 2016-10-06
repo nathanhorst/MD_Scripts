@@ -97,12 +97,12 @@ meant to be used for pair force as it only does the distance between the first t
 """
 
 def dist_v_timestep(nfiles,file1,file2):
-    file1=file1[11:-4]
-    file2=file2[11:-4]
+    file1=file1[6:-4]
+    file2=file2[6:-4]
     out=np.array([[0.0,0.0]])
     for c in range(0,nfiles):
         file0=(int(file1)+(int(file2)-int(file1))*c)
-        toopen='atoms.dump.'
+        toopen='atoms.'
         for v in range(0,10-len(str(file0))):
             toopen=toopen + '0'
         toopen=toopen + str(file0) + '.xml'
