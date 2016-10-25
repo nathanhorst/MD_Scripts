@@ -61,8 +61,18 @@ def polynp_conv(L,save,read,Lpoly):
                 fid.write('1.07199\n')
         fid.write('</mass>\n')
         
-    def bonds(fid, data, Lpoly):
+    def bonds(fid, data, Lpoly,PFconfig=False):
         fid.write('<bond>\n')
+        if PFconfig:
+                lol=-1
+                vpos=np.array([0.0])
+                for line in data:
+                        lol+=1
+                        s=line.split()
+                        if s[0] == 'V':
+                                vpos=np.append(vpos,lol)
+                fid.write('V-V '+str(vpos[1])+' '+str(vpos[2])+'\n')
+
         i=-1
         for line in data:
             i += 1
