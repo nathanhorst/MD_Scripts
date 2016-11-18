@@ -71,7 +71,7 @@ def polynp_conv(L,save,read,Lpoly):
 			s=line.split()
 			if s[0] == 'V':
 				vpos=np.append(vpos,lol)
-		fid.write('V-V '+str(vpos[1])+' '+str(vpos[2])+'\n')
+		fid.write('V-V '+str(int(vpos[1]))+' '+str(int(vpos[2]))+'\n')
         i=-1
         for line in data:
             i += 1
