@@ -40,12 +40,12 @@ def polynp_conv(L,save,read,Lpoly):
 	for line in data:
 	    index+=1
 	    s = line.split()
-	    if s[0]=='V':
+	    if line.startswith('V'):
 		new=np.append(new,index)
         for line in data:
             s = line.split()
-            if s[0] == 'Au' or s[0] == 'S' or s[0]=='V':
-	    	if(s[0]=='Au' and canCount):
+            if s[0] == 'Au' or s[0] == 'S' or line.startswith('V'):
+	    	if(line.startswith('V') and canCount):
 			count+=new[1]
 		canCount=False
 		fid.write(str(count)+'\n')
@@ -58,7 +58,7 @@ def polynp_conv(L,save,read,Lpoly):
         fid.write('<mass>\n')
         for line in data:
             s = line.split()
-            if s[0] == 'Au'or s[0]=='V':
+            if s[0] == 'Au'or line.startswith('V'):
                 fid.write('14.0424\n')
             if s[0] == 'S':
                 fid.write('2.28601\n')            
@@ -76,7 +76,7 @@ def polynp_conv(L,save,read,Lpoly):
                 for line in data:
                         lol+=1
                         s=line.split()
-                        if s[0] == 'V':
+                        if line.startswith('V'):
                                 vpos=np.append(vpos,lol)
                 fid.write('V-V '+str(int(vpos[1]))+' '+str(int(vpos[2]))+'\n')
         i=-1
@@ -96,7 +96,7 @@ def polynp_conv(L,save,read,Lpoly):
         for line in data:
             i+=1
             s = line.split()
-	    if s[0]=='V':
+	    if line.startswith('V'):
 		vcoord=i
             if s[0]=='S':
                 for j in range(0,Lpoly-2):
