@@ -23,12 +23,18 @@ def build_2NP_PF_xyz(read,save,R):
         x=float(s[1])-float(R/2)
         y=float(s[2])
         z=float(s[3])
-        f.write(("%s %f %f %f\n")%(s[0],x,y,z))
+	if s[0]=='V1':
+		f.write(("V1 %f %f %f\n")%(x,y,z))
+	else:
+        	f.write(("%s %f %f %f\n")%(s[0],x,y,z))
     for line in fd:
         s=line.split()
         x=float(s[1])+float(R/2)
         y=float(s[2])
         z=float(s[3])
-        f.write(("%s %f %f %f\n")%(s[0],x,y,z))
+	if s[0]=='V1':
+        	f.write(("V2 %f %f %f\n")%(x,y,z))
+	else:
+		f.write(("%s %f %f %f\n")%(s[0],x,y,z))
 
-build_2NP_PF_xyz('PEOsphere22.xyz','PEOsphere22_r75.xyz',75)
+build_2NP_PF_xyz('PEOsphere29.xyz','PEOsphere29_r69.xyz',69)
