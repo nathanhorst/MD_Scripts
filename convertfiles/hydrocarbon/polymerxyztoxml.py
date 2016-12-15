@@ -35,11 +35,18 @@ def polynp_conv(L,save,read,Lpoly):
         fid.write('<body>\n')
         count=0
         canCount=False
+	index=-1
+	new=[]
+	for line in data:
+	    index+=1
+	    s = line.split()
+	    if s[0]=='V':
+		new=np.append(new,index)
         for line in data:
             s = line.split()
             if s[0] == 'Au' or s[0] == 'S' or s[0]=='V':
 	    	if(s[0]=='Au' and canCount):
-			count+=1
+			count+=new[1]
 		canCount=False
 		fid.write(str(count)+'\n')
             else:

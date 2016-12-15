@@ -49,17 +49,18 @@ def write_gaussian_to_H(gaussian):
     for i in range(0,len(gaussian)):
         fil.write(str(gaussian[i]))
         fil.write('\n')
-"""   
-x=create_gaussian(2.054/3.96,0.17047/3.96)
+"""
+x=create_gaussian(2.05403/3.96,0.17407/3.96)
 np.random.shuffle(x)
 print x
 x=x[:10000]
 x=np.append(x,[-3.0],axis=0)
-y=create_gaussian(2.41345/3.96,0.26313/3.96)
+y=create_gaussian(2.41345/3.96,0.263/3.96)
 np.random.shuffle(y)
 y=y[:10000]
 y=np.append(y,[-3.0],axis=0)
 x=np.append(x,y,axis=0)
+
 y=create_gaussian(3.44748/3.96,.41399/3.96)
 np.random.shuffle(y)
 y=y[:10000]
@@ -75,6 +76,7 @@ np.random.shuffle(y)
 y=y[:10000]
 y=np.append(y,[-3.0],axis=0)
 x=np.append(x,y,axis=0)
+
 #x=np.append(x,create_gaussian(2.41345/3.96,0.263/3.96),axis=0)
 #x=np.append(x,create_gaussian(3.44748/3.96,.41399/3.96),axis=0)
 #x=np.append(x,create_gaussian(4.62168/3.96,0.32528/3.96),axis=0)
@@ -83,7 +85,7 @@ x=np.append(x,y,axis=0)
 
     
 write_gaussian_to_H(x)        
-""" 
+"""
 def histogram(arr,boxes):    
     arr=np.sort(arr,axis=0,kind='mergesort')
     #print arr
