@@ -22,15 +22,15 @@ distance_scale=1.0/3.96
 real_temp=330
 bond_strength=30
 #8.18+1.97+1.25
-npRadius=1.14
-repeats=12
-l=.128*repeats+.2
+npRadius=11.4
+repeats=18
+l=1.28*repeats+2
 lamda=l/npRadius
 opmtau=(3*lamda+1)**(1/3)
 ocmtau=-1*(1+lamda)/2+(((1+lamda)/2)**2+(6*lamda+2)/(1+lamda))**(.5)
 
 
-hoomd.context.initialize("--mode=cpu")
+hoomd.context.initialize("")
 sysfile= "Au140HC_r20.xml" 
 system = hoomd.deprecated.init.read_xml(filename=sysfile)
 		
@@ -118,8 +118,8 @@ del fire
 
 
 
-run_time=1e3
-dumps_per_distance=1e2
+run_time=1e5
+dumps_per_distance=5e2
 n=dumps_per_distance
 logger = hoomd.analyze.log(filename='mylog.log', period=run_time/n, quantities=['temperature','potential_energy','kinetic_energy','volume','pressure','pair_lj_energy','bond_harmonic_energy','angle_harmonic_energy'])
 dump_time=run_time/n
@@ -130,10 +130,10 @@ nonrigid_integrator=hoomd.md.integrate.nvt(group=particles,kT=real_temp*kb,tau=.
 dcd = hoomd.dump.dcd(filename='mixture.dcd', period=1000, overwrite=True)
 reals=np.array([r])
 rs=np.array([r])
-H=np.array([-3.0]) 
 
-while(r>(ocmtau-4)*distance_scale):
+while(r>(ocmtaui-4)*distance_scale):
     hoomd.md.integrate.mode_standard(dt=.001)
+    H=np.array([-3.0])
     logger.enable()           
     for c in range(int(n)):
         	hoomd.run(dump_time)
@@ -142,9 +142,10 @@ while(r>(ocmtau-4)*distance_scale):
         	w=hi.part_distance(z[2],z[1],'atoms.dump')
     		H=np.append(H,[w],axis=0)
 
+    rs=np.append(rs,[r],axis=0)
+    lastr=r
     r-=instep
     harmonic.bond_coeff.set('V-V', k=bond_strength, r0=r)
-    rs=np.append(rs,[r],axis=0)
     logger.disable()
     z=hi.v_pos_matrix('atoms.dump')
     w=hi.part_distance(z[2],z[1],'atoms.dump')
@@ -152,22 +153,21 @@ while(r>(ocmtau-4)*distance_scale):
     H=np.append(H,[-3.0],axis=0)
     harmonic.bond_coeff.set('V-V', k=bond_strength, r0=r)
     try:    
-        hoomd.run(2e4)
+        hoomd.run(1e5)
     except(RuntimeError):
         print("Failed at " + str(r))
         break
     z=hi.v_pos_matrix('atoms.dump')
     w=hi.part_distance(z[2],z[1],'atoms.dump')
     reals=np.append(reals,[w],axis=0)
-H=H[1:]
-with open('H.txt') as myfile:
-	for i in range(1,len(H)):
-		myfile.write(str(H[i])+'\n')
-with open('R.txt') as rfile:
-    for i in range(0,len(rs)):
-        rfile.write(str(rs[i]) + '\n')
+    H=H[1:]
+    with open('H.txt','a') as myfile:
+        for i in range(1,len(H)):
+            myfile.write(str(H[i])+'\n')
+    with open('R.txt','a') as rfile:
+            rfile.write(str(lastr) + '\n')
 print 'where its supposed to be'
 print rs
 print '\n'
-print 'where it is'
+print 'where it was'
 print reals
