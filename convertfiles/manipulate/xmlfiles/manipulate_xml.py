@@ -81,14 +81,32 @@ def renumber_bodies_xml(save,read):
 
 		rank=child.find('body').text
 		rank=rank.splitlines()
-		for i in range(len(rank)):
-			if rank[i]=='1':
+		for i in range(indices[1]-1,len(rank)):
+			if rank[i]!='-1':
 				rank[i]=str(indices[1]-1)
 			else:
 				pass
+		for j in range(indices[1]-1):
+                        if rank[j]!='-1':
+                                rank[j]=str(indices[0]-1)
+			else:
+				pass
+
 		rank2='\n'.join(rank)
 		newrank=child.find('body')
 		newrank.text=str(rank2)+'\n'
+
+		rank4=child.find('bond').text
+		rank4=rank4.splitlines()
+		for k in range(len(rank4)):
+			if(rank4[k].startswith('V-V')):
+				newbond='V-V '+str(indices[0]-1)+' '+str(indices[1]-1)
+				rank4[k]=newbond
+				print('Changed Bond to %s'%(rank4[k]))
+
+		rank5='\n'.join(rank4)
+		nrank=child.find('bond')
+		nrank.text=str(rank5)+'\n'
 
 	########## WRITE THE NEW INDICES TO THE OUTPUT FILE ############
 	tree.write(save)
