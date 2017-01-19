@@ -1,14 +1,97 @@
-# -*- coding: utf-8 -*-
-"""
-Spyder Editor
-
-This is a temporary script file.
-"""
-
-
+from __future__ import division
 import os
 import sys
 from math import sqrt
+import numpy as np
+import xml.etree.ElementTree as ET
+
+def reorder_mats_xml(save,read):
+	### INPUT FILE PARSE ###	 
+	tree=ET.parse(read)
+	root=tree.getroot()		
+	### GET NODE INFORMATION ###	
+	for child in root:
+		### FIND ALL NODES ###
+		ranks=child.findall('./')
+
+		### GET V and Au INDICES FOR REORDERING ###
+		rank=child.find('type').text
+		rank=rank.splitlines()
+		if(rank[1]=='V1'):
+			print('#########################\nfirst V position is correct\n#########################')
+			switch=False
+		else:
+			print('#########################\nneed to switch V positions\n#########################')
+			switch=True
+
+		rank=child.find('type').text
+		rank=rank.splitlines()
+		if(switch):
+			print('switching V positions')
+			counter=0
+			indices=[]
+      			indAu=[]
+			firstAu=False
+            		for i in range(len(rank)):
+                        	if(rank[i].startswith('V')):
+                                	counter+=1
+                                	indices.append(i)
+                        	if(rank[i]=='Au' and not(firstAu)):
+                                	firstAu=True
+                                	indAu.append(i)	
+                        	if(rank[i]=='S'):
+                                	firstAu=False
+
+			print('\nthere are %s particles'% counter)
+                	print('indices to switch are')
+                	print(indices,indAu)
+			
+			tags=[]
+			for node in ranks:
+				tags.append(node.tag)
+				
+			for t in range(len(tags)):
+				if(tags[t]!='box'):
+					temp=child.find(tags[t]).text
+					temp=temp.splitlines()
+					if(len(temp)==len(rank)):
+						temp[indices[0]],temp[indAu[0]]=temp[indAu[0]],temp[indices[0]]
+						temp[indices[1]],temp[indAu[1]]=temp[indAu[1]],temp[indices[1]]
+						#print(temp[indAu[0]],temp[indAu[1]])
+						temp2='\n'.join(temp)
+						newtemp=child.find(tags[t])
+						newtemp.text=str(temp2)+'\n'
+	########## WRITE THE NEW INDICES TO THE OUTPUT FILE ############
+	tree.write(save)
+
+def renumber_bodies_xml(save,read):
+	### INPUT FILE PARSE ###	 
+	tree=ET.parse(read)
+	root=tree.getroot()		
+	### GET NODE INFORMATION ###	
+	for child in root:
+		### GET V INDICES FOR RENAMING ###
+		rank3=child.find('type').text
+		rank3=rank3.splitlines()
+		indices=[]
+            	for i in range(len(rank3)):
+                        if(rank3[i].startswith('V')):
+                                indices.append(i)
+				print(indices)
+
+		rank=child.find('body').text
+		rank=rank.splitlines()
+		for i in range(len(rank)):
+			if rank[i]=='1':
+				rank[i]=str(indices[1]-1)
+			else:
+				pass
+		rank2='\n'.join(rank)
+		newrank=child.find('body')
+		newrank.text=str(rank2)+'\n'
+
+	########## WRITE THE NEW INDICES TO THE OUTPUT FILE ############
+	tree.write(save)
 
 ###########################################################################
 ### This function simply copies an xml file, and renames the particle types
