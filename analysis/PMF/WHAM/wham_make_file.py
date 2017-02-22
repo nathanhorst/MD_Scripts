@@ -62,3 +62,16 @@ def make_histograms(data_file, delta_f):
 			h_fun[ind][i] = 0.0
 
     return (h_fun, bin_edges)
+
+
+
+def handle_R(rfile):
+    """reads in the rfile in order to set the r_0 values in params
+    
+    :param rfile: file the r_0 values were written to by compress_H 
+    """
+    r=open(rfile,'r')
+    data=r.readlines()
+    for i in range(len(data)):
+        data[i]=float(data[i])
+    return data
