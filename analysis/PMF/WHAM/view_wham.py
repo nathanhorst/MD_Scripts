@@ -13,7 +13,7 @@ if __name__ == "__main__":
     eV2kcalmol=23.06 
     eVkb=8.617e-5
     
-    spring_constant = 30.00 * nrg2eV * eV2kcalmol
+    spring_constant = 30.0 * nrg2eV * eV2kcalmol
     # spring constant in kCal/mol Angstrom
     fl = 'H.txt'
     # file name
@@ -44,7 +44,7 @@ if __name__ == "__main__":
     
     # initial guess
     ini_conf = 0.8*np.ones(n_wind)
- 
+    """ 
     # create the class
     wham = WPC.WhamPotential(r_val, h_fun, params)
     print wham.hist
@@ -66,7 +66,6 @@ if __name__ == "__main__":
         print(txt)
     
     # plot the potential with the same units as Roux
-    wham.write_soln()
     pf = wham.pmf()   
     val_min = np.amin(pf)
     plt.plot(wham.r, kbt*(pf-val_min))
@@ -106,8 +105,8 @@ if __name__ == "__main__":
     plt.show()
     
     wham.write_soln()
-
-    wham2 = WPC.WhamPotential(r_val, h_fun, params, solution='F.txt')
+    """ 
+    wham = WPC.WhamPotential(r_val, h_fun, params, solution='F.txt')
     
      # this is rho
     rho_val = wham.rho()

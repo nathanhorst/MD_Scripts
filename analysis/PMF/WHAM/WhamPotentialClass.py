@@ -12,12 +12,13 @@ from scipy import optimize
 class WhamPotential(object):
     """Class to compute wham potentials"""
     
-    def __init__(self, r_val, hf, params):
+    def __init__(self, r_val, hf, params,solution=False):
         """
         The constructor
         :param r_val: edge r values
         :param hf: data file (a numpy array with dimensions [num_of_windows, number of points in histogram])
         :param params: parameters of the harmonic term
+        :param solution: name of file storing free energy solutions; defaults to False
         """
 
         self.num_windows = hf.shape[0]
@@ -35,7 +36,20 @@ class WhamPotential(object):
         self.k, self.r_0 = params
         
         # store the solution for free energies here
-        self.soln = False
+        if(solution!=False):
+            x=open(solution,'r')
+            y=x.readlines()
+            print len(y)
+            print y
+            if (len(y)!=self.num_windows):
+                print("The given free energies and number of windows are not compatible. \n Not reading in free energies")
+                self.soln = False
+            else:
+                self.soln=np.zeros(self.num_windows)
+                for i in range(self.num_windows):
+                    self.soln[i]=float(y[i])
+        else:
+            self.soln=False
         
         # compute derivatives
         arg = np.argmax(self.hist, axis=1)
@@ -106,7 +120,7 @@ class WhamPotential(object):
                 val_fun[ind] = 1.0/self.w_int(x, ind)
             return val_fun
         
-        self.soln = optimize.fixed_point(loc_fun, ini_conf, xtol=xs)
+        self.soln = optimize.fixed_point(loc_fun, ini_conf, xtol=xs,maxiter=10000)
     
     def rho(self):
         """Returns the rho function
@@ -181,4 +195,35 @@ class WhamPotential(object):
         
         return quad(self.eval_der, self.der_pos[0], rval)
         
+    def write_soln(self):
+	"""outputs the free energy solutions to a texxt file so that they don't need
+	   to be computed a second time when the results need to be seen later
+
+	   returns True if the file is written
+	"""
+        if type(self.soln).__module__ != 'numpy':
+            print('fixed point solution needs to be computed first')
+            return False
+        fid=open('F.txt','w')
+        for x in range(self.num_windows):
+            fid.write(str(self.soln[x]))
+            fid.write('\n')
+        return True
         
+	
+
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
